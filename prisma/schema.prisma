@@ -18,6 +18,8 @@ model User{
   username String @unique
   email String?
   password String
+
+  Session Session[]
 }
 
 model Player{
@@ -28,4 +30,12 @@ model Player{
   seating String @default("")
   rating Int @default(1200)
   birth_year Int
+}
+
+model Session{
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [user_id], references: [id])
+  user_id Int
+  creation_date DateTime @default(now())
+  token String @unique
 }
