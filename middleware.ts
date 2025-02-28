@@ -1,19 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "./lib/prisma";
+import { cookies } from "next/headers";
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("KhFSS")?.value;
   if (token) {
-    const found = await prisma.session.findFirst({ where: { token: token } });
-    if (
-      found &&
-      (Date.now() - found.creation_date.getDate()) * 1000 * 60 * 60 * 24 <= 3
-    ) {
-      const response = NextResponse.next();
-      response.cookies.set("user", found.user_id.toString());
-      return response;
+    const apiRes = await fetch(`${request.nextUrl.origin}/api/auth/authorize`, {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token: token }),
+      method: "POST",
+    });
+
+    if ((await apiRes.json()).userId) {
+      const res = NextResponse.next();
+      res.cookies.set("userId", apiRes.toString(), { httpOnly: true });
+      return res;
     }
   }
+
   return NextResponse.redirect(new URL("/", request.url));
 }
 
