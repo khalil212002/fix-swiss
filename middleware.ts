@@ -1,7 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import auth from "./app/private/page";
 
 export async function middleware(request: NextRequest) {
+  const auth = await authorize(request);
+  if (auth) {
+    let res;
+    if (request.nextUrl.pathname == "/") {
+      res = NextResponse.redirect(new URL("/private", request.url));
+    } else if (request.nextUrl.pathname.startsWith("/auth/")) {
+      res = NextResponse.redirect(new URL("/", request.url));
+    } else {
+      res = NextResponse.next();
+    }
+    res.cookies.set("userId", auth, { httpOnly: true });
+    return res;
+  }
+
+  if (request.nextUrl.pathname == "/auth/login") return NextResponse.next();
+  return NextResponse.redirect(new URL("/auth/login", request.url));
+}
+
+async function authorize(request: NextRequest): Promise<string | null> {
   const token = request.cookies.get("KhFSS")?.value;
   if (token) {
     const apiRes = await fetch(`${request.nextUrl.origin}/api/auth/authorize`, {
@@ -13,16 +33,13 @@ export async function middleware(request: NextRequest) {
       method: "POST",
     });
 
-    if ((await apiRes.json()).userId) {
-      const res = NextResponse.next();
-      res.cookies.set("userId", apiRes.toString(), { httpOnly: true });
-      return res;
-    }
+    const json = await apiRes.json();
+    if (json && json.userId) return json.userId;
   }
 
-  return NextResponse.redirect(new URL("/", request.url));
+  return null;
 }
 
 export const config = {
-  matcher: ["/(private.*)"],
+  matcher: ["/private", "/", "/auth/(.*)"],
 };
