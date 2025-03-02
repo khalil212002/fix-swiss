@@ -43,5 +43,5 @@ async function authorize(request: NextRequest): Promise<string | null> {
 }
 
 export const config = {
-  matcher: ["/private", "/", "/auth/(.*)"],
+  matcher: ["/dashboard(.*)", "/", "/auth(.*)"],
 };

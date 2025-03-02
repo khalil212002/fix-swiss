@@ -32,6 +32,7 @@ model Player{
   birth_year Int
   first_name String
   last_name String
+  attendant Boolean @default(false)
 }
 
 model Session{
