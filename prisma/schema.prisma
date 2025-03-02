@@ -30,6 +30,8 @@ model Player{
   seating String @default("")
   rating Int @default(1200)
   birth_year Int
+  first_name String
+  last_name String
 }
 
 model Session{
