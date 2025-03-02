@@ -6,7 +6,7 @@ export async function middleware(request: NextRequest) {
   if (auth) {
     let res;
     if (request.nextUrl.pathname == "/") {
-      res = NextResponse.redirect(new URL("/private", request.url));
+      res = NextResponse.redirect(new URL("/dashboard", request.url));
     } else if (request.nextUrl.pathname == "/auth/logout") {
       res = NextResponse.next();
     } else if (request.nextUrl.pathname.startsWith("/auth/")) {
