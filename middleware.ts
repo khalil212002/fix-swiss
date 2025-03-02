@@ -8,6 +8,8 @@ export async function middleware(request: NextRequest) {
     let res;
     if (request.nextUrl.pathname == "/") {
       res = NextResponse.redirect(new URL("/private", request.url));
+    } else if (request.nextUrl.pathname == "/auth/logout") {
+      res = NextResponse.next();
     } else if (request.nextUrl.pathname.startsWith("/auth/")) {
       res = NextResponse.redirect(new URL("/", request.url));
     } else {
