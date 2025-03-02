@@ -1,6 +1,5 @@
+import { createHmac } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import auth from "./app/private/page";
 
 export async function middleware(request: NextRequest) {
   const auth = await authorize(request);
@@ -25,13 +24,14 @@ export async function middleware(request: NextRequest) {
 
 async function authorize(request: NextRequest): Promise<string | null> {
   const token = request.cookies.get("KhFSS")?.value;
+
   if (token) {
     const apiRes = await fetch(`${request.nextUrl.origin}/api/auth/authorize`, {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ token: token }),
+      body: JSON.stringify({ token: token, secret: process.env.TOTP_SECRET }),
       method: "POST",
     });
 
