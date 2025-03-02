@@ -19,8 +19,19 @@ export async function addPlayer(form: FormData): Promise<string | null> {
         attendant: attendant,
       },
     });
+
     return null;
   } catch (e) {
+    console.log(e);
+
     return "Failed to add player";
   }
 }
+
+export async function getAttendantPlayers() {
+  return prisma.player.findMany({
+    where: { attendant: true },
+  });
+}
+
+export async function searchPlayer(FormData: FormData) {}
