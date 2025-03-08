@@ -1,6 +1,6 @@
 "use client";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { addPlayer, searchPlayer } from "./actions";
+import { addPlayer, searchPlayer, updatePlayer } from "./actions";
 
 export default function PlayersPage() {
   const [error, setError] = useState<null | string>(null);
@@ -187,7 +187,13 @@ export default function PlayersPage() {
                         type="checkbox"
                         className="checkbox checkbox-success"
                         checked={p.attendant}
-                        onChange={(e) => {}}
+                        onChange={(e) => {
+                          updatePlayer(p.id, { attendant: !p.attendant }).then(
+                            () => {
+                              searchPlayer(null).then((v) => updatePlayers(v));
+                            }
+                          );
+                        }}
                       />
                       Attendant
                     </label>

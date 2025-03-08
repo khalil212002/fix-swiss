@@ -28,6 +28,19 @@ export async function addPlayer(form: FormData): Promise<string | null> {
   }
 }
 
+export async function updatePlayer(
+  id: number,
+  data: {
+    attendant?: boolean;
+    birth_year?: number;
+    first_name?: string;
+    last_name?: string;
+    rating?: number;
+  }
+) {
+  await prisma.player.update({ where: { id: id }, data: data });
+}
+
 export async function searchPlayer(FormData: FormData | null): Promise<
   {
     rating: number;
