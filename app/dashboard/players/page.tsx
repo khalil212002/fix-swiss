@@ -131,7 +131,7 @@ export default function PlayersPage() {
               <button
                 ref={resetButton}
                 type="reset"
-                className="btn btn-secondary "
+                className="btn btn-ghost "
                 onClick={() => {
                   setError(null);
                   searchPlayer(null).then((v) => updatePlayers(v));
@@ -161,9 +161,9 @@ export default function PlayersPage() {
           </div>
         </div>
       </form>
-      <div className="w-2xl">
+      <div className="min-w-4/6">
         {players.length != 0 && (
-          <ul className="list  rounded-box bg-secondary  overflow-auto max-h-100">
+          <ul className="list  rounded-box bg-secondary">
             <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
               Players
             </li>
