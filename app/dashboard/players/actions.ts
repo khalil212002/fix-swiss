@@ -28,12 +28,36 @@ export async function addPlayer(form: FormData): Promise<string | null> {
   }
 }
 
-export async function searchPlayer(FormData: FormData | null) {
-  let found: any[];
+export async function searchPlayer(FormData: FormData | null): Promise<
+  {
+    rating: number;
+    attendant: boolean;
+    id: number;
+    birth_year: number;
+    first_name: string;
+    last_name: string;
+  }[]
+> {
   try {
-    const birthYear = FormData?.get("birthYear")?.toString() ?? "";
-    if (birthYear.length > 0) {
-      found = await prisma.player.findMany({
+    let fname = FormData?.get("firstName")?.toString();
+    let lname = FormData?.get("lastName")?.toString();
+    let bYear = FormData?.get("birthYear")?.toString();
+    let filter = false;
+
+    if ((fname?.length ?? 0) > 0) {
+      fname += "%";
+      filter = true;
+    }
+    if ((lname?.length ?? 0) > 0) {
+      lname += "%";
+      filter = true;
+    }
+    if ((bYear?.length ?? 0) > 0) {
+      bYear += "%";
+      filter = true;
+    }
+    if (!filter) {
+      return await prisma.player.findMany({
         select: {
           attendant: true,
           birth_year: true,
@@ -42,38 +66,14 @@ export async function searchPlayer(FormData: FormData | null) {
           rating: true,
           id: true,
         },
-        where: {
-          first_name: {
-            startsWith: FormData?.get("firstName")?.toString() ?? "",
-          },
-          AND: {
-            last_name: {
-              startsWith: FormData?.get("lastName")?.toString() ?? "",
-            },
-            AND: {
-              birth_year: Number.parseInt(birthYear),
-            },
-          },
-        },
-      });
-    } else {
-      found = await prisma.player.findMany({
-        where: {
-          first_name: {
-            startsWith: FormData?.get("firstName")?.toString() ?? "",
-          },
-          AND: {
-            last_name: {
-              startsWith: FormData?.get("lastName")?.toString() ?? "",
-            },
-          },
-        },
         orderBy: { attendant: "desc" },
       });
     }
+    return await prisma.$queryRaw`SELECT attendant, birth_year, first_name, last_name, rating, id 
+    FROM player ORDER BY CASE WHEN 
+    (first_name LIKE ${fname} OR last_name LIKE ${lname} OR birth_year LIKE ${bYear}) THEN 0
+    ELSE 1 END, attendant desc`;
   } catch {
-    found = [];
+    return [];
   }
-
-  return found;
 }
