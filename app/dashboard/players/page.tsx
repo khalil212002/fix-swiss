@@ -163,7 +163,7 @@ export default function PlayersPage() {
       </form>
       <div className="min-w-4/6">
         {players.length != 0 && (
-          <ul className="list  rounded-box bg-secondary">
+          <ul className="list  rounded-box bg-secondary max-h-100 overflow-auto">
             <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
               Players
             </li>
