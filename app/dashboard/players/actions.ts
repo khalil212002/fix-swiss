@@ -28,10 +28,52 @@ export async function addPlayer(form: FormData): Promise<string | null> {
   }
 }
 
-export async function getAttendantPlayers() {
-  return prisma.player.findMany({
-    where: { attendant: true },
-  });
-}
+export async function searchPlayer(FormData: FormData | null) {
+  let found: any[];
+  try {
+    const birthYear = FormData?.get("birthYear")?.toString() ?? "";
+    if (birthYear.length > 0) {
+      found = await prisma.player.findMany({
+        select: {
+          attendant: true,
+          birth_year: true,
+          first_name: true,
+          last_name: true,
+          rating: true,
+          id: true,
+        },
+        where: {
+          first_name: {
+            startsWith: FormData?.get("firstName")?.toString() ?? "",
+          },
+          AND: {
+            last_name: {
+              startsWith: FormData?.get("lastName")?.toString() ?? "",
+            },
+            AND: {
+              birth_year: Number.parseInt(birthYear),
+            },
+          },
+        },
+      });
+    } else {
+      found = await prisma.player.findMany({
+        where: {
+          first_name: {
+            startsWith: FormData?.get("firstName")?.toString() ?? "",
+          },
+          AND: {
+            last_name: {
+              startsWith: FormData?.get("lastName")?.toString() ?? "",
+            },
+          },
+        },
+        orderBy: { attendant: "desc" },
+      });
+    }
+  } catch {
+    found = [];
+  }
 
-export async function searchPlayer(FormData: FormData) {}
+  return found;
+}

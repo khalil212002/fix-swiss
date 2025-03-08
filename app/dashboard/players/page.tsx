@@ -1,17 +1,13 @@
 "use client";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { addPlayer, getAttendantPlayers } from "./actions";
+import { addPlayer, searchPlayer } from "./actions";
 
 export default function PlayersPage() {
   const [error, setError] = useState<null | string>(null);
-  const [players, setPlayers] = useState<
+  const [players, updatePlayers] = useState<
     {
       rating: number;
       id: number;
-      score: number;
-      receivedBye: boolean;
-      avoid: string;
-      seating: string;
       birth_year: number;
       first_name: string;
       last_name: string;
@@ -25,9 +21,6 @@ export default function PlayersPage() {
     setError(null);
     try {
       const formData = new FormData(event.currentTarget);
-      console.log(
-        Number.parseInt(formData.get("birthYear")?.toString() ?? "-1")
-      );
       if (formData.get("firstName")?.toString().length == 0) {
         setError("First name is empty!");
       } else if (formData.get("lastName")?.toString().length == 0) {
@@ -49,8 +42,8 @@ export default function PlayersPage() {
         setError(result);
         if (result == null) {
           resetButton.current?.click();
-          getAttendantPlayers().then((v) => {
-            setPlayers(v);
+          searchPlayer(null).then((v) => {
+            updatePlayers(v);
           });
         }
       }
@@ -59,15 +52,23 @@ export default function PlayersPage() {
     }
   }
 
+  async function onChange(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    try {
+      const formData = new FormData(event.currentTarget);
+      searchPlayer(formData).then((v) => updatePlayers(v));
+    } catch {}
+  }
+
   useEffect(() => {
-    getAttendantPlayers().then((v) => {
-      setPlayers(v);
+    searchPlayer(null).then((v) => {
+      updatePlayers(v);
     });
   }, []);
 
   return (
     <>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} onChange={onChange}>
         <div className="card bg-base-300 shadow-sm m-5">
           <div className="card-body">
             <h2 className="card-title">Search/Add player</h2>
@@ -101,6 +102,7 @@ export default function PlayersPage() {
                   className="input input-md"
                 />
               </label>
+              <div className="divider divider-horizontal" />
               <label className="floating-label my-2 me-2">
                 <span>Rating</span>
                 <input
@@ -132,6 +134,7 @@ export default function PlayersPage() {
                 className="btn btn-secondary "
                 onClick={() => {
                   setError(null);
+                  searchPlayer(null).then((v) => updatePlayers(v));
                 }}
               >
                 Clear
@@ -162,7 +165,7 @@ export default function PlayersPage() {
         {players.length != 0 && (
           <ul className="list  rounded-box bg-secondary  overflow-auto max-h-100">
             <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
-              Attendant players
+              Players
             </li>
             {players.map((p) => {
               return (
