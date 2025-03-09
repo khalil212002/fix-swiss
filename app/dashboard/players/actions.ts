@@ -52,24 +52,11 @@ export async function searchPlayer(FormData: FormData | null): Promise<
   }[]
 > {
   try {
-    let fname = FormData?.get("firstName")?.toString();
-    let lname = FormData?.get("lastName")?.toString();
-    let bYear = FormData?.get("birthYear")?.toString();
-    let filter = false;
+    let fname = FormData?.get("firstName")?.toString() + "%";
+    let lname = FormData?.get("lastName")?.toString() + "%";
+    let bYear = FormData?.get("birthYear")?.toString() + "%";
 
-    if ((fname?.length ?? 0) > 0) {
-      fname += "%";
-      filter = true;
-    }
-    if ((lname?.length ?? 0) > 0) {
-      lname += "%";
-      filter = true;
-    }
-    if ((bYear?.length ?? 0) > 0) {
-      bYear += "%";
-      filter = true;
-    }
-    if (!filter) {
+    if (fname?.length == 1 && lname?.length == 1 && bYear?.length == 1) {
       return await prisma.player.findMany({
         select: {
           attendant: true,
@@ -82,9 +69,10 @@ export async function searchPlayer(FormData: FormData | null): Promise<
         orderBy: { attendant: "desc" },
       });
     }
+
     return await prisma.$queryRaw`SELECT attendant, birth_year, first_name, last_name, rating, id 
     FROM player ORDER BY CASE WHEN 
-    (first_name LIKE ${fname} OR last_name LIKE ${lname} OR birth_year LIKE ${bYear}) THEN 0
+    (first_name LIKE ${fname} AND last_name LIKE ${lname} AND birth_year LIKE ${bYear}) THEN 0
     ELSE 1 END, attendant desc`;
   } catch {
     return [];

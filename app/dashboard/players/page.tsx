@@ -4,7 +4,8 @@ import { addPlayer, searchPlayer, updatePlayer } from "./actions";
 
 export default function PlayersPage() {
   const [error, setError] = useState<null | string>(null);
-  const [players, updatePlayers] = useState<
+  const [formData, setFormDate] = useState<FormData>();
+  const [players, setPlayers] = useState<
     {
       rating: number;
       id: number;
@@ -14,7 +15,12 @@ export default function PlayersPage() {
       attendant: boolean;
     }[]
   >([]);
-  const resetButton = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    searchPlayer(formData ?? null).then((v) => {
+      setPlayers(v);
+    });
+  }, [formData]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,10 +47,7 @@ export default function PlayersPage() {
         const result = await addPlayer(formData);
         setError(result);
         if (result == null) {
-          resetButton.current?.click();
-          searchPlayer(null).then((v) => {
-            updatePlayers(v);
-          });
+          document.getElementById("formRst")?.click();
         }
       }
     } catch (err) {
@@ -54,21 +57,17 @@ export default function PlayersPage() {
 
   async function onChange(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    try {
-      const formData = new FormData(event.currentTarget);
-      searchPlayer(formData).then((v) => updatePlayers(v));
-    } catch {}
+    if (
+      ["firstName", "lastName", "birthYear"].includes(
+        (event.target as HTMLInputElement).name
+      )
+    )
+      setFormDate(new FormData(event.currentTarget));
   }
-
-  useEffect(() => {
-    searchPlayer(null).then((v) => {
-      updatePlayers(v);
-    });
-  }, []);
 
   return (
     <>
-      <form onSubmit={onSubmit} onChange={onChange}>
+      <form onSubmit={onSubmit} onInput={onChange}>
         <div className="card bg-base-300 shadow-sm m-5">
           <div className="card-body">
             <h2 className="card-title">Search/Add player</h2>
@@ -129,12 +128,12 @@ export default function PlayersPage() {
                 Add
               </button>
               <button
-                ref={resetButton}
+                id="formRst"
                 type="reset"
                 className="btn btn-ghost "
                 onClick={() => {
                   setError(null);
-                  searchPlayer(null).then((v) => updatePlayers(v));
+                  searchPlayer(null).then((v) => setPlayers(v));
                 }}
               >
                 Clear
@@ -190,7 +189,9 @@ export default function PlayersPage() {
                         onChange={(e) => {
                           updatePlayer(p.id, { attendant: !p.attendant }).then(
                             () => {
-                              searchPlayer(null).then((v) => updatePlayers(v));
+                              searchPlayer(formData ?? null).then((v) =>
+                                setPlayers(v)
+                              );
                             }
                           );
                         }}
