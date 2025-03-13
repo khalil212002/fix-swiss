@@ -28,8 +28,12 @@ export async function addPlayer(form: FormData): Promise<string | null> {
   }
 }
 
-export async function updatePlayer(id: number, data: Player) {
-  await prisma.player.update({ where: { id: id }, data: data });
+export async function updatePlayer(data: Player) {
+  await prisma.player.update({ where: { id: data.id }, data: data });
+}
+
+export async function deletePlayer(id: number) {
+  await prisma.player.delete({ where: { id: id } });
 }
 
 export async function searchPlayer(

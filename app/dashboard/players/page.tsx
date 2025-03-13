@@ -1,11 +1,12 @@
 "use client";
-import { FormEvent, useEffect, useRef, useState } from "react";
-import { addPlayer, searchPlayer, updatePlayer } from "./actions";
+import { FormEvent, useEffect, useState } from "react";
+import { addPlayer, deletePlayer, searchPlayer, updatePlayer } from "./actions";
 
 export default function PlayersPage() {
   const [error, setError] = useState<null | string>(null);
   const [formData, setFormDate] = useState<FormData>();
   const [players, setPlayers] = useState<Player[]>([]);
+  const [editPlayer, setEditPlayer] = useState<Player>();
 
   useEffect(() => {
     searchPlayer(formData ?? null).then((v) => {
@@ -46,7 +47,12 @@ export default function PlayersPage() {
     }
   }
 
-  function openPlayerSetting(player: Player) {}
+  function openPlayerSetting(player: Player) {
+    setEditPlayer(player);
+    (
+      document.getElementById("edit_player_modal") as HTMLDialogElement
+    ).showModal();
+  }
 
   async function onChange(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -180,7 +186,8 @@ export default function PlayersPage() {
                         className="checkbox checkbox-success"
                         checked={p.attendant}
                         onChange={(e) => {
-                          updatePlayer(p.id ?? -1, {
+                          updatePlayer({
+                            id: p.id,
                             attendant: !p.attendant,
                           }).then(() => {
                             searchPlayer(formData ?? null).then((v) =>
@@ -206,16 +213,102 @@ export default function PlayersPage() {
           </ul>
         )}
       </div>
-      <dialog id="my_modal_1" className="modal">
+      <dialog id="edit_player_modal" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">Hello!</h3>
-          <p className="py-4">
-            Press ESC key or click the button below to close
-          </p>
+          <h3 className="font-bold text-lg mb-2">
+            Edit player {editPlayer?.id}
+          </h3>
+          <div className="flex">
+            <label className="floating-label my-2 me-2">
+              <span>First name</span>
+              <input
+                name="firstName"
+                type="text"
+                placeholder="First name"
+                defaultValue={editPlayer?.first_name}
+                className="input input-md"
+                onChange={(e) => {
+                  const p = { ...editPlayer };
+                  p.first_name = e.target.value;
+                  setEditPlayer(p);
+                }}
+              />
+            </label>
+            <label className="floating-label my-2 me-2">
+              <span className="bg-secondary">Last name</span>
+              <input
+                name="lastName"
+                type="text"
+                placeholder="Last name"
+                className="input input-md"
+                defaultValue={editPlayer?.last_name}
+                onChange={(e) => {
+                  const p = { ...editPlayer };
+                  p.last_name = e.target.value;
+                  setEditPlayer(p);
+                }}
+              />
+            </label>
+            <label className="floating-label my-2 me-2">
+              <span>Birth year</span>
+              <input
+                name="birthYear"
+                defaultValue={editPlayer?.birth_year}
+                type="number"
+                min={1900}
+                max={new Date().getFullYear()}
+                placeholder="Birth year"
+                className="input input-md"
+                onChange={(e) => {
+                  const p = { ...editPlayer };
+                  p.birth_year = Number.parseInt(e.target.value);
+                  setEditPlayer(p);
+                }}
+              />
+            </label>
+            <label className="floating-label my-2 me-2">
+              <span>Rating</span>
+              <input
+                name="rating"
+                type="number"
+                min={1200}
+                max={3000}
+                placeholder="Rating"
+                defaultValue={editPlayer?.rating}
+                className="input input-md"
+                onChange={(e) => {
+                  const p = { ...editPlayer };
+                  p.rating = Number.parseInt(e.target.value);
+                  setEditPlayer(p);
+                }}
+              />
+            </label>
+          </div>
           <div className="modal-action">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
-              <button className="btn">Close</button>
+              <button
+                className="btn btn-error mx-1"
+                onClick={() => {
+                  deletePlayer(editPlayer?.id ?? -1).then(() => {
+                    searchPlayer(formData ?? null).then((v) => setPlayers(v));
+                  });
+                }}
+              >
+                Delete
+              </button>
+              <button className="btn btn-secondary mx-1">Cancel</button>
+              <button
+                className="btn btn-primary mx-1"
+                onClick={() => {
+                  editPlayer &&
+                    updatePlayer(editPlayer).then(() => {
+                      searchPlayer(formData ?? null).then((v) => setPlayers(v));
+                    });
+                }}
+              >
+                Save
+              </button>
             </form>
           </div>
         </div>
