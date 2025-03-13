@@ -5,16 +5,7 @@ import { addPlayer, searchPlayer, updatePlayer } from "./actions";
 export default function PlayersPage() {
   const [error, setError] = useState<null | string>(null);
   const [formData, setFormDate] = useState<FormData>();
-  const [players, setPlayers] = useState<
-    {
-      rating: number;
-      id: number;
-      birth_year: number;
-      first_name: string;
-      last_name: string;
-      attendant: boolean;
-    }[]
-  >([]);
+  const [players, setPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
     searchPlayer(formData ?? null).then((v) => {
@@ -54,6 +45,8 @@ export default function PlayersPage() {
       setError((err as Error).message);
     }
   }
+
+  function openPlayerSetting(player: Player) {}
 
   async function onChange(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -187,24 +180,46 @@ export default function PlayersPage() {
                         className="checkbox checkbox-success"
                         checked={p.attendant}
                         onChange={(e) => {
-                          updatePlayer(p.id, { attendant: !p.attendant }).then(
-                            () => {
-                              searchPlayer(formData ?? null).then((v) =>
-                                setPlayers(v)
-                              );
-                            }
-                          );
+                          updatePlayer(p.id ?? -1, {
+                            attendant: !p.attendant,
+                          }).then(() => {
+                            searchPlayer(formData ?? null).then((v) =>
+                              setPlayers(v)
+                            );
+                          });
                         }}
                       />
                       Attendant
                     </label>
                   </div>
+                  <button
+                    className="btn btn-link no-underline"
+                    onClick={() => {
+                      openPlayerSetting(p);
+                    }}
+                  >
+                    edit
+                  </button>
                 </li>
               );
             })}
           </ul>
         )}
       </div>
+      <dialog id="my_modal_1" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Hello!</h3>
+          <p className="py-4">
+            Press ESC key or click the button below to close
+          </p>
+          <div className="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
     </>
   );
 }
