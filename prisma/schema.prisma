@@ -13,32 +13,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id Int @id @default(autoincrement())
-  username String @unique
-  email String?
+model User {
+  id       Int     @id @default(autoincrement())
+  username String  @unique
+  email    String?
   password String
 
-  Session Session[]
+  sessions Session[]
 }
 
-model Player{
-  id Int @id @default(autoincrement())
-  score Int @default(0)
+model Player {
+  id          Int     @id @default(autoincrement())
+  score       Int     @default(0)
   receivedBye Boolean @default(false)
-  avoid String @default("")
-  seating String @default("")
-  rating Int @default(1200)
-  birth_year Int
-  first_name String
-  last_name String
-  attendant Boolean @default(false)
+  avoid       String  @default("")
+  seating     String  @default("")
+  rating      Int     @default(1200)
+  birth_year  Int
+  first_name  String
+  last_name   String
+  attendant   Boolean @default(false)
+  white_games        Game[] @relation(name: "whiteG")
+  black_game        Game[] @relation(name: "blackG")
 }
 
-model Session{
-  id Int @id @default(autoincrement())
-  user User @relation(fields: [user_id], references: [id])
-  user_id Int
+model Game {
+  round Int
+  match Int
+  white Player @relation(fields: [player1], references: [id],name: "whiteG")
+  player1 Int
+  black   Player @relation(fields: [player2], references: [id],name:"blackG")
+  player2 Int
+  winner  Int?
+
+  @@id([round, match], name: "id")
+}
+
+model Session {
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [user_id], references: [id])
+  user_id       Int
   creation_date DateTime @default(now())
-  token String @unique
+  token         String   @unique
 }
