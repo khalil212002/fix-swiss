@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { randomBytes, createHmac } from "crypto";
 
-export default async function login(
+export default async function Login(
   prevState: string,
   formData: FormData
 ): Promise<string> {

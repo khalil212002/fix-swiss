@@ -7,8 +7,8 @@ export default function EditPlayerDialog({
   setPlayer,
 }: {
   player: Player;
-  setPlayer: Function;
-  toggleUpdatePlayers: Function;
+  setPlayer: (player: Player | undefined) => void;
+  toggleUpdatePlayers: () => void;
 }) {
   const [editPlayer, setEditPlayer] = useState(player);
   useEffect(() => {
@@ -99,7 +99,7 @@ export default function EditPlayerDialog({
                 onClick={() => {
                   deletePlayer(editPlayer?.id ?? -1).then(() => {
                     toggleUpdatePlayers();
-                    setPlayer();
+                    setPlayer(undefined);
                   });
                 }}
               >
@@ -108,7 +108,7 @@ export default function EditPlayerDialog({
               <button
                 type="button"
                 className="btn btn-secondary mx-1"
-                onClick={() => setPlayer(null)}
+                onClick={() => setPlayer(undefined)}
               >
                 Cancel
               </button>
@@ -116,10 +116,10 @@ export default function EditPlayerDialog({
                 type="button"
                 className="btn btn-primary mx-1"
                 onClick={() => {
-                  editPlayer &&
+                  if (editPlayer)
                     updatePlayer(editPlayer).then(() => {
                       toggleUpdatePlayers();
-                      setPlayer(null);
+                      setPlayer(undefined);
                     });
                 }}
               >

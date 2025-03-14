@@ -1,6 +1,6 @@
 "use client";
-import { FormEvent, useEffect, useState } from "react";
-import { addPlayer, deletePlayer, searchPlayer, updatePlayer } from "./actions";
+import { FormEvent, useState } from "react";
+import { addPlayer } from "./actions";
 import PlayerList from "./PlayerList";
 import EditPlayerDialog from "./EditPlayerDialog";
 

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { updatePlayer, searchPlayer } from "./actions";
 
 export default function PlayerList({
@@ -8,7 +8,7 @@ export default function PlayerList({
 }: {
   formData?: FormData;
   updatePlayersToggle: boolean;
-  openPlayerSetting: Function;
+  openPlayerSetting: (player: Player) => void;
 }) {
   const [players, setPlayers] = useState<Player[]>([]);
 
@@ -43,7 +43,7 @@ export default function PlayerList({
                       type="checkbox"
                       className="checkbox checkbox-success"
                       checked={p.attendant}
-                      onChange={(e) => {
+                      onChange={() => {
                         updatePlayer({
                           id: p.id,
                           attendant: !p.attendant,
