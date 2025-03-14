@@ -66,7 +66,7 @@ export default function DashboardLayout({
               <Link href={"/dashboard/players"}>Players</Link>
             </li>
             <li>
-              <Link href={"#"}>Games</Link>
+              <Link href={"/dashboard/games"}>Games</Link>
             </li>
             <li>
               <Link href={"#"}>Users</Link>

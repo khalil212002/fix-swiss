@@ -33,11 +33,11 @@ model Player {
   first_name  String
   last_name   String
   attendant   Boolean @default(false)
-  white_games        Game[] @relation(name: "whiteG")
-  black_game        Game[] @relation(name: "blackG")
+  white_matches        Match[] @relation(name: "whiteG")
+  black_matches       Match[] @relation(name: "blackG")
 }
 
-model Game {
+model Match {
   round Int
   match Int
   white Player @relation(fields: [player1], references: [id],name: "whiteG")
