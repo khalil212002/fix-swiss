@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { updatePlayer, searchPlayer } from "./actions";
+import { createContext, useEffect, useState } from "react";
+import { updatePlayer, searchPlayer, GetGamesList } from "./actions";
+import { GameSelect } from "./GameSelect";
 
 export default function PlayerList({
   formData,
@@ -36,6 +37,7 @@ export default function PlayerList({
                 </div>
 
                 <div>{p.rating}</div>
+                <GameSelect />
                 <div>
                   <label className="fieldset-label my-2 me-2  ">
                     <input

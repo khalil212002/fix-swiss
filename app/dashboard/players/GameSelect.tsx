@@ -1,13 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GetGamesList } from "./actions";
+import { GamesListContext } from "./page";
 
 export function GameSelect() {
-  const [gameList, setGameList] = useState<Game[]>([]);
-  useEffect(() => {
-    GetGamesList().then((v) => {
-      setGameList(v);
-    });
-  }, []);
+  const { gameList, setGameList } = useContext(GamesListContext);
   return (
     <select
       defaultValue="-1"
