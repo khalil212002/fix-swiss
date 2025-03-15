@@ -23,30 +23,40 @@ model User {
 }
 
 model Player {
-  id          Int     @id @default(autoincrement())
-  score       Int     @default(0)
-  receivedBye Boolean @default(false)
-  avoid       String  @default("")
-  seating     String  @default("")
-  rating      Int     @default(1200)
-  birth_year  Int
-  first_name  String
-  last_name   String
-  attendant   Boolean @default(false)
-  white_matches        Match[] @relation(name: "whiteG")
-  black_matches       Match[] @relation(name: "blackG")
+  id            Int     @id @default(autoincrement())
+  score         Int     @default(0)
+  receivedBye   Boolean @default(false)
+  avoid         String  @default("")
+  seating       String  @default("")
+  rating        Int     @default(1200)
+  birth_year    Int
+  first_name    String
+  last_name     String
+  attendant     Boolean @default(false)
+  white_matches Match[] @relation(name: "whiteG")
+  black_matches Match[] @relation(name: "blackG")
+  game          Game?   @relation(fields: [game_id], references: [id])
+  game_id       Int?
 }
 
 model Match {
-  round Int
-  match Int
-  white Player @relation(fields: [player1], references: [id],name: "whiteG")
+  round   Int
+  match   Int
+  white   Player @relation(fields: [player1], references: [id], name: "whiteG")
   player1 Int
-  black   Player @relation(fields: [player2], references: [id],name:"blackG")
+  black   Player @relation(fields: [player2], references: [id], name: "blackG")
   player2 Int
   winner  Int?
 
   @@id([round, match], name: "id")
+}
+
+model Game {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  rounds      Int
+  players     Player[]
 }
 
 model Session {

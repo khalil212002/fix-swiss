@@ -63,10 +63,10 @@ export default function DashboardLayout({
           ></label>
           <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4">
             <li>
-              <Link href={"/dashboard/players"}>Players</Link>
+              <Link href={"/dashboard/games"}>Games</Link>
             </li>
             <li>
-              <Link href={"/dashboard/games"}>Games</Link>
+              <Link href={"/dashboard/players"}>Players</Link>
             </li>
             <li>
               <Link href={"#"}>Users</Link>
