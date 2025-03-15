@@ -3,6 +3,7 @@ import { FormEvent, useState } from "react";
 import { addPlayer } from "./actions";
 import PlayerList from "./PlayerList";
 import EditPlayerDialog from "./EditPlayerDialog";
+import { GameSelect } from "./GameSelect";
 
 export default function PlayersPage() {
   const [error, setError] = useState<null | string>(null);
@@ -46,7 +47,7 @@ export default function PlayersPage() {
   async function onChange(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (
-      ["firstName", "lastName", "birthYear"].includes(
+      ["firstName", "lastName", "birthYear", "game"].includes(
         (event.target as HTMLInputElement).name
       )
     )
@@ -89,6 +90,7 @@ export default function PlayersPage() {
                   className="input input-md"
                 />
               </label>
+              <GameSelect />
               <div className="divider divider-horizontal" />
               <label className="floating-label my-2 me-2">
                 <span>Rating</span>

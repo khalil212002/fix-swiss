@@ -9,6 +9,8 @@ export async function addPlayer(form: FormData): Promise<string | null> {
     const birthYear = form.get("birthYear")!.toString();
     const rating = form.get("rating")!.toString();
     const attendant = (form.get("attendant")?.toString() ?? "off") == "on";
+    let game: number | null = Number.parseInt(form.get("game")!.toString());
+    if (game == -1) game = null;
 
     await prisma.player.create({
       data: {
@@ -17,6 +19,7 @@ export async function addPlayer(form: FormData): Promise<string | null> {
         birth_year: Number.parseInt(birthYear),
         rating: Number.parseInt(rating),
         attendant: attendant,
+        game_id: game,
       },
     });
 
@@ -36,6 +39,10 @@ export async function deletePlayer(id: number) {
   await prisma.player.delete({ where: { id: id } });
 }
 
+export async function GetGamesList() {
+  return await prisma.game.findMany({ select: { id: true, name: true } });
+}
+
 export async function searchPlayer(
   FormData: FormData | null
 ): Promise<Player[]> {
@@ -43,6 +50,22 @@ export async function searchPlayer(
     const fname = FormData?.get("firstName")?.toString() + "%";
     const lname = FormData?.get("lastName")?.toString() + "%";
     const bYear = FormData?.get("birthYear")?.toString() + "%";
+    const game = Number.parseInt(FormData?.get("game")?.toString()!);
+
+    if (game != -1) {
+      return await prisma.player.findMany({
+        select: {
+          attendant: true,
+          birth_year: true,
+          first_name: true,
+          last_name: true,
+          rating: true,
+          id: true,
+        },
+        orderBy: { attendant: "desc" },
+        where: { game_id: game },
+      });
+    }
 
     if (fname?.length == 1 && lname?.length == 1 && bYear?.length == 1) {
       return await prisma.player.findMany({
