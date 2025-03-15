@@ -102,7 +102,7 @@ export default function PlayersPage() {
                     className="input input-md"
                   />
                 </label>
-                <GameSelect />
+                <GameSelect defaultValue={-1} />
                 <div className="divider divider-horizontal" />
                 <label className="floating-label my-2 me-2">
                   <span>Rating</span>

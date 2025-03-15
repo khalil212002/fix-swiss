@@ -32,7 +32,10 @@ export async function addPlayer(form: FormData): Promise<string | null> {
 }
 
 export async function updatePlayer(data: Player) {
-  await prisma.player.update({ where: { id: data.id }, data: data });
+  await prisma.player.update({
+    where: { id: data.id },
+    data: { ...data, game_id: data.game_id == -1 ? null : data.game_id },
+  });
 }
 
 export async function deletePlayer(id: number) {
@@ -61,6 +64,7 @@ export async function searchPlayer(
           last_name: true,
           rating: true,
           id: true,
+          game_id: true,
         },
         orderBy: { attendant: "desc" },
         where: { game_id: game },
@@ -76,12 +80,13 @@ export async function searchPlayer(
           last_name: true,
           rating: true,
           id: true,
+          game_id: true,
         },
         orderBy: { attendant: "desc" },
       });
     }
 
-    return await prisma.$queryRaw`SELECT attendant, birth_year, first_name, last_name, rating, id 
+    return await prisma.$queryRaw`SELECT attendant, birth_year, first_name, last_name, rating, id, game_id 
     FROM player ORDER BY CASE WHEN 
     (first_name LIKE ${fname} AND last_name LIKE ${lname} AND birth_year LIKE ${bYear}) THEN 0
     ELSE 1 END, attendant desc`;

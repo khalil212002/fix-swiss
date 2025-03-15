@@ -1,12 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import { ChangeEvent, useContext } from "react";
 import { GetGamesList } from "./actions";
 import { GamesListContext } from "./page";
 
-export function GameSelect() {
+export function GameSelect({
+  onChange,
+  defaultValue,
+}: {
+  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
+  defaultValue: number;
+}) {
   const { gameList, setGameList } = useContext(GamesListContext);
   return (
     <select
-      defaultValue="-1"
+      defaultValue={defaultValue}
       onClick={() => {
         GetGamesList().then((v) => {
           setGameList(v);
@@ -14,6 +20,7 @@ export function GameSelect() {
       }}
       name="game"
       className="select w-50 my-2 me-2"
+      onChange={onChange}
     >
       <option key={-1} value={-1}>
         Game/Group

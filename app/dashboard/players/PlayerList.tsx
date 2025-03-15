@@ -37,7 +37,16 @@ export default function PlayerList({
                 </div>
 
                 <div>{p.rating}</div>
-                <GameSelect />
+                <GameSelect
+                  defaultValue={p.game_id ?? -1}
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    updatePlayer({
+                      id: p.id,
+                      game_id: Number.parseInt(e.target.value),
+                    });
+                  }}
+                />
                 <div>
                   <label className="fieldset-label my-2 me-2  ">
                     <input
