@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import GameList from "./GameList";
 import { CreateGame } from "./actions";
+import EditGameDailog from "./EditGameDialog";
 
 export default function Games_page() {
   const submit = async (e: FormEvent<HTMLFormElement>) => {
@@ -16,6 +17,7 @@ export default function Games_page() {
   };
   const [error, setError] = useState<string | null>(null);
   const [updateList, setUpdateList] = useState(false);
+  const [editGame, setEditGame] = useState<Game | null>(null);
 
   return (
     <>
@@ -92,7 +94,17 @@ export default function Games_page() {
         update={() => {
           setUpdateList(!updateList);
         }}
+        setEditGame={setEditGame}
       />
+      {editGame && (
+        <EditGameDailog
+          game={editGame}
+          setGame={setEditGame}
+          updateList={() => {
+            setUpdateList(!updateList);
+          }}
+        />
+      )}
     </>
   );
 }

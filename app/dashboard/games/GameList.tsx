@@ -4,9 +4,11 @@ import { GetGames } from "./actions";
 export default function GameList({
   updated,
   update,
+  setEditGame,
 }: {
   updated: boolean;
   update: () => void;
+  setEditGame: (game: Game | null) => void;
 }) {
   const [games, setGames] = useState<Game[]>([]);
   useEffect(() => {
@@ -38,6 +40,9 @@ export default function GameList({
           </div>
           <div>Rounds:{g.rounds}</div>
           <div>players:{g.player_count}</div>
+          <button className="btn btn-link" onClick={() => setEditGame(g)}>
+            edit
+          </button>
         </li>
       ))}
     </ul>

@@ -8,13 +8,35 @@ export async function GetGames() {
   for (let i = 0; i < games.length; i++) {
     final.push({
       ...games[i],
-      player_count: await prisma.player.count({ where: { id: games[i].id } }),
+      player_count: await prisma.player.count({
+        where: { game_id: games[i].id },
+      }),
     });
   }
 
   console.log(final);
 
   return final;
+}
+
+export async function UpdateGame(game: Game) {
+  await prisma.game.update({
+    where: { id: game.id },
+    data: {
+      name: game.name,
+      description: game.description,
+      rounds: game.rounds,
+    },
+  });
+}
+
+export async function DeleteGame(id: number) {
+  try {
+    await prisma.game.delete({ where: { id: id } });
+    return null;
+  } catch (e) {
+    return (e as Error).message;
+  }
 }
 
 export async function CreateGame(formData: FormData): Promise<string | null> {
