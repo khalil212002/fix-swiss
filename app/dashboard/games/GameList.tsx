@@ -14,14 +14,20 @@ export default function GameList({
   }, [updated]);
   return (
     <ul className="list bg-secondary rounded-box shadow-md min-w-2/6">
-      <li className="p-4 pb-2 text-xs flex justify-between content-center opacity-60 tracking-wide">
+      <li
+        key={"head"}
+        className="p-4 pb-2 text-xs flex justify-between content-center opacity-60 tracking-wide"
+      >
         <button className="text-xs">Game</button>
         <button className="btn btn-xs btn-ghost" onClick={() => update()}>
           refresh
         </button>
       </li>
       {games.map((g) => (
-        <li className="list-row flex flex-row justify-between text-center">
+        <li
+          className="list-row flex flex-row justify-between text-center"
+          key={g.id}
+        >
           <div>
             <div>
               {g.name}({g.id})
