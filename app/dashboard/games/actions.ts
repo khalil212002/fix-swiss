@@ -9,7 +9,7 @@ export async function GetGames() {
     final.push({
       ...games[i],
       player_count: await prisma.player.count({
-        where: { game_id: games[i].id },
+        where: { attendant: true, AND: { game_id: games[i].id } },
       }),
     });
   }
