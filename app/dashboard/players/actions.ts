@@ -50,12 +50,12 @@ export async function searchPlayer(
   FormData: FormData | null
 ): Promise<Player[]> {
   try {
-    const fname = FormData?.get("firstName")?.toString() + "%";
-    const lname = FormData?.get("lastName")?.toString() + "%";
-    const bYear = FormData?.get("birthYear")?.toString() + "%";
+    const fname = (FormData?.get("firstName") ?? "").toString() + "%";
+    const lname = (FormData?.get("lastName") ?? "").toString() + "%";
+    const bYear = (FormData?.get("birthYear") ?? "").toString() + "%";
     const game = Number.parseInt(FormData?.get("game")?.toString()!);
 
-    if (game != -1) {
+    if (!Number.isNaN(game) && game != -1) {
       return await prisma.player.findMany({
         select: {
           attendant: true,
@@ -85,6 +85,8 @@ export async function searchPlayer(
         orderBy: { attendant: "desc" },
       });
     }
+
+    console.log("hii");
 
     return await prisma.$queryRaw`SELECT attendant, birth_year, first_name, last_name, rating, id, game_id 
     FROM player ORDER BY CASE WHEN 

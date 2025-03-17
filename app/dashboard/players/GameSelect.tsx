@@ -7,9 +7,11 @@ export function GameSelect({
   defaultValue,
 }: {
   onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
-  defaultValue: number;
+  defaultValue: string;
 }) {
   const { gameList, setGameList } = useContext(GamesListContext);
+  console.log(defaultValue);
+
   return (
     <select
       defaultValue={defaultValue}
@@ -26,7 +28,11 @@ export function GameSelect({
         Game/Group
       </option>
       {gameList.map((g) => (
-        <option key={g.id} value={g.id}>
+        <option
+          key={g.id}
+          value={g.id}
+          selected={g.id?.toString() == defaultValue}
+        >
           {g.name}
         </option>
       ))}

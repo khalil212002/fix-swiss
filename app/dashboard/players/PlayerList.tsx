@@ -38,7 +38,7 @@ export default function PlayerList({
 
                 <div>{p.rating}</div>
                 <GameSelect
-                  defaultValue={p.game_id ?? -1}
+                  defaultValue={(p.game_id ?? -1).toString()}
                   onChange={(e) => {
                     console.log(e.target.value);
                     updatePlayer({
