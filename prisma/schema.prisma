@@ -26,8 +26,8 @@ model Player {
   id            Int     @id @default(autoincrement())
   score         Int     @default(0)
   receivedBye   Boolean @default(false)
-  avoid         String  @default("")
-  seating       String  @default("")
+  avoid         String  @default("[]")
+  seating       String  @default("[]")
   rating        Int     @default(1200)
   birth_year    Int
   first_name    String
@@ -42,13 +42,15 @@ model Player {
 model Match {
   round   Int
   match   Int
-  white   Player @relation(fields: [player1], references: [id], name: "whiteG")
-  player1 Int
-  black   Player @relation(fields: [player2], references: [id], name: "blackG")
-  player2 Int
+  white   Player? @relation(fields: [player1], references: [id], name: "whiteG")
+  player1 Int?
+  black   Player? @relation(fields: [player2], references: [id], name: "blackG")
+  player2 Int?
   winner  Int?
+  game    Game    @relation(fields: [game_id], references: [id])
+  game_id Int
 
-  @@id([round, match], name: "id")
+  @@id([round, match, game_id], name: "id")
 }
 
 model Game {
@@ -57,6 +59,7 @@ model Game {
   description String?
   rounds      Int
   players     Player[]
+  matches     Match[]
 }
 
 model Session {

@@ -69,6 +69,9 @@ export default function DashboardLayout({
               <Link href={"/dashboard/players"}>Players</Link>
             </li>
             <li>
+              <Link href={"/dashboard/matches"}>Matches</Link>
+            </li>
+            <li>
               <Link href={"#"}>Users</Link>
             </li>
             <div className="divider"></div>
