@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { updatePlayer, searchPlayer, GetGamesList } from "./actions";
 import { GameSelect } from "./GameSelect";
+import { Player } from "@prisma/client";
 
 export default function PlayerList({
   formData,
@@ -9,9 +10,9 @@ export default function PlayerList({
 }: {
   formData?: FormData;
   updatePlayersToggle: boolean;
-  openPlayerSetting: (player: Player) => void;
+  openPlayerSetting: (player: Partial<Player>) => void;
 }) {
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<Partial<Player>[]>([]);
 
   useEffect(() => {
     searchPlayer(formData ?? null).then((v) => {

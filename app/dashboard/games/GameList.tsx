@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { GetGames } from "./actions";
+import { Game } from "@prisma/client";
 
 export default function GameList({
   updated,
@@ -8,9 +9,11 @@ export default function GameList({
 }: {
   updated: boolean;
   update: () => void;
-  setEditGame: (game: Game | null) => void;
+  setEditGame: (game: { game: Game; player_count: number } | null) => void;
 }) {
-  const [games, setGames] = useState<Game[]>([]);
+  const [games, setGames] = useState<{ game: Game; player_count: number }[]>(
+    []
+  );
   useEffect(() => {
     GetGames().then((v) => setGames(v));
   }, [updated]);
@@ -28,17 +31,17 @@ export default function GameList({
       {games.map((g) => (
         <li
           className="list-row flex flex-row justify-between text-center"
-          key={g.id}
+          key={g.game.id}
         >
           <div>
             <div>
-              {g.name}({g.id})
+              {g.game.name}({g.game.id})
             </div>
             <div className="text-xs uppercase font-semibold opacity-60">
-              {g.description}
+              {g.game.description}
             </div>
           </div>
-          <div>Rounds:{g.rounds}</div>
+          <div>Rounds:{g.game.rounds}</div>
           <div>players:{g.player_count}</div>
           <button className="btn btn-link" onClick={() => setEditGame(g)}>
             edit

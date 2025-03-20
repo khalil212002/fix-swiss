@@ -3,26 +3,33 @@
 import { useEffect, useState } from "react";
 import { GetGames } from "../games/actions";
 import { GetMatches, Pair, SetWinner } from "./actions";
-import { Match, Player } from "@prisma/client";
+import { Match, Player, Game } from "@prisma/client";
 
 export default function MatchesPage() {
-  const [games, setGames] = useState<Game[]>([]);
-  const [game, setGame] = useState<Game | null>(null);
+  const [games, setGames] = useState<{ game: Game; player_count: number }[]>(
+    []
+  );
+  const [game, setGame] = useState<{ game: Game; player_count: number } | null>(
+    null
+  );
   const [refreshGameList, setRefreshGameList] = useState(false);
   const [round, setRound] = useState(1);
   const [matches, setMatches] = useState<Match[]>([]);
   useEffect(() => {
-    GetGames().then((v) => setGames(v));
+    GetGames().then((v) => {
+      setGames(v);
+    });
   }, [refreshGameList]);
   useEffect(() => {
-    game?.id &&
-      GetMatches(game.id, round).then((v) => {
+    if (game?.game.id)
+      GetMatches(game.game.id, round).then((v) => {
         setMatches(v);
       });
+    else setMatches([]);
   }, [game, round]);
 
   async function pair() {
-    await Pair(game!.id!, round);
+    await Pair(game!.game.id!, round);
   }
 
   return (
@@ -33,7 +40,7 @@ export default function MatchesPage() {
           className="select select-primary"
           onChange={(e) => {
             setGame(
-              games.find((g) => g.id?.toString() == e.target.value) ?? null
+              games.find((g) => g.game.id?.toString() == e.target.value) ?? null
             );
             setRound(1);
           }}
@@ -43,8 +50,8 @@ export default function MatchesPage() {
             Select Game
           </option>
           {games.map((g) => (
-            <option key={g.id} value={g.id}>
-              {g.name}
+            <option key={g.game.id} value={g.game.id}>
+              {g.game.name}
             </option>
           ))}
         </select>
@@ -54,10 +61,10 @@ export default function MatchesPage() {
               Players: {game?.player_count}
             </h3>
             <h3 className="mt-1 ms-10 text-nowrap">
-              Rounds: {round}/{game?.rounds}
+              Rounds: {round}/{game?.game.rounds}
             </h3>
             <h3 className="mt-1 ms-10 text-nowrap">
-              Description: {game?.description}
+              Description: {game?.game.description}
             </h3>
           </>
         )}
@@ -77,7 +84,7 @@ export default function MatchesPage() {
             </button>
             <button
               className="btn mx-1 btn-secondary"
-              disabled={round == game.rounds}
+              disabled={round == game.game.rounds}
               onClick={() => setRound(round + 1)}
             >
               Next
@@ -89,7 +96,7 @@ export default function MatchesPage() {
         <>
           <ul className="list mt-3 bg-secondary rounded-box shadow-md">
             {matches.map((v) => (
-              <li className="flex justify-evenly list-row" key={v.game_id}>
+              <li className="flex justify-evenly list-row" key={v.match}>
                 <p className=" w-50">
                   ⬜
                   {((v as any).white as Player).first_name +

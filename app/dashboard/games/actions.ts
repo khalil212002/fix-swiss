@@ -1,13 +1,14 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { Game } from "@prisma/client";
 
 export async function GetGames() {
   const games = await prisma.game.findMany();
-  let final: Game[] = [];
+  let final: { game: Game; player_count: number }[] = [];
   for (let i = 0; i < games.length; i++) {
     final.push({
-      ...games[i],
+      game: games[i],
       player_count: await prisma.player.count({
         where: { attendant: true, AND: { game_id: games[i].id } },
       }),

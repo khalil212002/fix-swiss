@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import GameList from "./GameList";
 import { CreateGame } from "./actions";
 import EditGameDailog from "./EditGameDialog";
+import { Game } from "@prisma/client";
 
 export default function Games_page() {
   const submit = async (e: FormEvent<HTMLFormElement>) => {
@@ -17,7 +18,10 @@ export default function Games_page() {
   };
   const [error, setError] = useState<string | null>(null);
   const [updateList, setUpdateList] = useState(false);
-  const [editGame, setEditGame] = useState<Game | null>(null);
+  const [editGame, setEditGame] = useState<{
+    game: Game;
+    player_count: number;
+  } | null>(null);
 
   return (
     <>

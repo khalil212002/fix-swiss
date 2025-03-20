@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { deletePlayer, updatePlayer } from "./actions";
+import { Player } from "@prisma/client";
 
 export default function EditPlayerDialog({
   player,
   toggleUpdatePlayers,
   setPlayer,
 }: {
-  player: Player;
+  player: Partial<Player>;
   setPlayer: (player: Player | undefined) => void;
   toggleUpdatePlayers: () => void;
 }) {

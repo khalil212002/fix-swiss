@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { Player } from "@prisma/client";
 
 export async function addPlayer(form: FormData): Promise<string | null> {
   try {
@@ -31,7 +32,7 @@ export async function addPlayer(form: FormData): Promise<string | null> {
   }
 }
 
-export async function updatePlayer(data: Player) {
+export async function updatePlayer(data: Partial<Player>) {
   await prisma.player.update({
     where: { id: data.id },
     data: { ...data, game_id: data.game_id == -1 ? null : data.game_id },
@@ -48,7 +49,7 @@ export async function GetGamesList() {
 
 export async function searchPlayer(
   FormData: FormData | null
-): Promise<Player[]> {
+): Promise<Partial<Player>[]> {
   try {
     const fname = (FormData?.get("firstName") ?? "").toString() + "%";
     const lname = (FormData?.get("lastName") ?? "").toString() + "%";
@@ -85,8 +86,6 @@ export async function searchPlayer(
         orderBy: { attendant: "desc" },
       });
     }
-
-    console.log("hii");
 
     return await prisma.$queryRaw`SELECT attendant, birth_year, first_name, last_name, rating, id, game_id 
     FROM player ORDER BY CASE WHEN 

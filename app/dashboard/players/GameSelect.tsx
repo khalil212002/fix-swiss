@@ -10,7 +10,6 @@ export function GameSelect({
   defaultValue: string;
 }) {
   const { gameList, setGameList } = useContext(GamesListContext);
-  console.log(defaultValue);
 
   return (
     <select

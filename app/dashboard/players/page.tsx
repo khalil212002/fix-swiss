@@ -4,18 +4,19 @@ import { addPlayer, GetGamesList } from "./actions";
 import PlayerList from "./PlayerList";
 import EditPlayerDialog from "./EditPlayerDialog";
 import { GameSelect } from "./GameSelect";
+import { Player, Game } from "@prisma/client";
 
 export const GamesListContext = createContext<{
-  gameList: Game[];
-  setGameList: (gameList: Game[]) => void;
+  gameList: Partial<Game>[];
+  setGameList: (gameList: Partial<Game>[]) => void;
 }>({ gameList: [], setGameList: () => {} });
 
 export default function PlayersPage() {
   const [error, setError] = useState<null | string>(null);
   const [formData, setFormDate] = useState<FormData>();
   const [updatePlayersToggle, toggleUpdatePlayers] = useState(false);
-  const [editPlayer, setEditPlayer] = useState<Player>();
-  const [gameList, setGameList] = useState<Game[]>([]);
+  const [editPlayer, setEditPlayer] = useState<Partial<Player>>();
+  const [gameList, setGameList] = useState<Partial<Game>[]>([]);
   useEffect(() => {
     GetGamesList().then((v) => {
       setGameList(v);
@@ -61,8 +62,9 @@ export default function PlayersPage() {
       ["firstName", "lastName", "birthYear", "game"].includes(
         (event.target as HTMLInputElement).name
       )
-    )
+    ) {
       setFormDate(new FormData(event.currentTarget));
+    }
   }
 
   return (
