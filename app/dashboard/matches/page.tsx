@@ -15,6 +15,7 @@ export default function MatchesPage() {
   const [refreshGameList, setRefreshGameList] = useState(false);
   const [round, setRound] = useState(1);
   const [matches, setMatches] = useState<Match[]>([]);
+  const [refreshMatchesList, setRefreshMatchesList] = useState(false);
   useEffect(() => {
     GetGames().then((v) => {
       setGames(v);
@@ -26,10 +27,11 @@ export default function MatchesPage() {
         setMatches(v);
       });
     else setMatches([]);
-  }, [game, round]);
+  }, [game, round, refreshMatchesList]);
 
   async function pair() {
     await Pair(game!.game.id!, round);
+    setRefreshMatchesList(!refreshMatchesList);
   }
 
   return (
@@ -97,8 +99,8 @@ export default function MatchesPage() {
           <ul className="list mt-3 bg-secondary rounded-box shadow-md">
             {matches.map((v) => (
               <li className="flex justify-evenly list-row" key={v.match}>
-                <p className=" w-50">
-                  ⬜
+                <p className=" w-50 my-auto">
+                  {"⬜ "}
                   {((v as Match & { white: Player }).white as Player)
                     .first_name +
                     " " +
@@ -112,7 +114,11 @@ export default function MatchesPage() {
                       "btn btn-accent join-item" +
                       (v.winner == 1 ? " btn-primary" : "")
                     }
-                    onClick={() => SetWinner(v.game_id, v.round, v.match, 1)}
+                    onClick={() =>
+                      SetWinner(v.game_id, v.round, v.match, 1).then(() =>
+                        setRefreshMatchesList(!refreshMatchesList)
+                      )
+                    }
                   >
                     1 : 0
                   </button>
@@ -120,6 +126,11 @@ export default function MatchesPage() {
                     className={
                       "btn btn-accent join-item" +
                       (v.winner == 0 ? " btn-primary" : "")
+                    }
+                    onClick={() =>
+                      SetWinner(v.game_id, v.round, v.match, 0).then(() =>
+                        setRefreshMatchesList(!refreshMatchesList)
+                      )
                     }
                   >
                     0.5 : 0.5
@@ -129,17 +140,22 @@ export default function MatchesPage() {
                       "btn btn-accent join-item" +
                       (v.winner == -1 ? " btn-primary" : "")
                     }
+                    onClick={() =>
+                      SetWinner(v.game_id, v.round, v.match, -1).then(() =>
+                        setRefreshMatchesList(!refreshMatchesList)
+                      )
+                    }
                   >
                     0 : 1
                   </button>
                 </div>
-                <p className="w-50 text-end">
+                <p className="w-50 text-end my-auto">
                   ({v.player2}){" "}
                   {(v as Match & { black: Player }).black.first_name +
                     " " +
                     ((v as Match & { black: Player }).black as Player)
                       .last_name}
-                  ⬛
+                  {" ⬛"}
                 </p>
               </li>
             ))}
