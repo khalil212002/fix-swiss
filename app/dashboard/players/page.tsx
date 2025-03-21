@@ -13,7 +13,7 @@ export const GamesListContext = createContext<{
 
 export default function PlayersPage() {
   const [error, setError] = useState<null | string>(null);
-  const [formData, setFormDate] = useState<FormData>();
+  const [formData, setFormData] = useState<FormData>();
   const [updatePlayersToggle, toggleUpdatePlayers] = useState(false);
   const [editPlayer, setEditPlayer] = useState<Partial<Player>>();
   const [gameList, setGameList] = useState<Partial<Game>[]>([]);
@@ -63,7 +63,7 @@ export default function PlayersPage() {
         (event.target as HTMLInputElement).name
       )
     ) {
-      setFormDate(new FormData(event.currentTarget));
+      setFormData(new FormData(event.currentTarget));
     }
   }
 
@@ -137,6 +137,7 @@ export default function PlayersPage() {
                   className="btn btn-ghost "
                   onClick={() => {
                     setError(null);
+                    formData?.set("game", "-1");
                     toggleUpdatePlayers(!updatePlayersToggle);
                   }}
                 >

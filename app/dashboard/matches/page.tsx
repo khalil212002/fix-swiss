@@ -99,9 +99,11 @@ export default function MatchesPage() {
               <li className="flex justify-evenly list-row" key={v.match}>
                 <p className=" w-50">
                   ⬜
-                  {((v as any).white as Player).first_name +
+                  {((v as Match & { white: Player }).white as Player)
+                    .first_name +
                     " " +
-                    ((v as any).white as Player).last_name}{" "}
+                    ((v as Match & { white: Player }).white as Player)
+                      .last_name}{" "}
                   ({v.player1})
                 </p>
                 <div className="join">
@@ -133,9 +135,10 @@ export default function MatchesPage() {
                 </div>
                 <p className="w-50 text-end">
                   ({v.player2}){" "}
-                  {((v as any).black as Player).first_name +
+                  {(v as Match & { black: Player }).black.first_name +
                     " " +
-                    ((v as any).black as Player).last_name}
+                    ((v as Match & { black: Player }).black as Player)
+                      .last_name}
                   ⬛
                 </p>
               </li>
