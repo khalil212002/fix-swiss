@@ -33,7 +33,7 @@ export async function Pair(game: number, round: number) {
   );
 }
 
-export async function deletePairing(gameId: number) {
+export async function DeletePairing(gameId: number) {
   await prisma.match.popMatches(gameId);
 }
 
