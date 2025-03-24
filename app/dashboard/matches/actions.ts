@@ -15,8 +15,16 @@ export async function Pair(game: number, round: number) {
       receivedBye: true,
     },
   });
+  console.log(players);
 
-  const matches = Swiss(players, round, round == 1, true);
+  const matches = Swiss(
+    players.map((v) => {
+      return { ...v, avoid: v.avoid.filter((a) => a != null) };
+    }),
+    round,
+    round == 1,
+    true
+  );
 
   await prisma.match.pushMatches(
     matches.map((v) => {

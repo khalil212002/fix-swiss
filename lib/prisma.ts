@@ -7,9 +7,7 @@ const prisma = new PrismaClient()
         avoid: {
           needs: { avoid_str: true },
           compute(data) {
-            return (JSON.parse(data.avoid_str) as Array<number>).filter(
-              (v) => v != null
-            );
+            return JSON.parse(data.avoid_str) as Array<number | null>;
           },
         },
         seating: {
