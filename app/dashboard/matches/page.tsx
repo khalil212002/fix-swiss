@@ -124,40 +124,43 @@ export default function MatchesPage() {
                 <div className="join">
                   <button
                     className={
-                      "btn btn-accent join-item" +
-                      (v.winner == 1 ? " btn-primary" : "")
+                      "btn btn-primary join-item" +
+                      (v.winner == 1 ? "" : " btn-soft")
                     }
                     onClick={() =>
                       SetWinner(v.game_id, v.round, v.match, 1).then(() =>
                         setRefreshMatchesList(!refreshMatchesList)
                       )
                     }
+                    disabled={v.player2 == null}
                   >
                     1 : 0
                   </button>
                   <button
                     className={
-                      "btn btn-accent join-item" +
-                      (v.winner == 0 ? " btn-primary" : "")
+                      "btn btn-primary join-item" +
+                      (v.winner == 0 ? "" : " btn-soft")
                     }
                     onClick={() =>
                       SetWinner(v.game_id, v.round, v.match, 0).then(() =>
                         setRefreshMatchesList(!refreshMatchesList)
                       )
                     }
+                    disabled={v.player2 == null}
                   >
                     0.5 : 0.5
                   </button>
                   <button
                     className={
-                      "btn btn-accent join-item" +
-                      (v.winner == -1 ? " btn-primary" : "")
+                      "btn btn-primary join-item" +
+                      (v.winner == -1 ? "" : " btn-soft")
                     }
                     onClick={() =>
                       SetWinner(v.game_id, v.round, v.match, -1).then(() =>
                         setRefreshMatchesList(!refreshMatchesList)
                       )
                     }
+                    disabled={v.player2 == null}
                   >
                     0 : 1
                   </button>
