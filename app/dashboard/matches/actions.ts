@@ -9,37 +9,28 @@ export async function Pair(game: number, round: number) {
     select: {
       id: true,
       score: true,
-      receivedBye: true,
-      avoid: true,
       seating: true,
       rating: true,
+      avoid: true,
+      receivedBye: true,
     },
   });
 
-  let matches = Swiss(
-    players.map((v) => {
-      return {
-        ...v,
-        avoid: JSON.parse(v.avoid),
-        seating: JSON.parse(v.seating),
-      };
-    }),
-    round,
-    round == 1,
-    true
-  );
+  const matches = Swiss(players, round, round == 1, true);
 
-  await prisma.match.createMany({
-    data: matches.map((v) => {
+  await prisma.match.addMatches(
+    matches.map((v) => {
       return {
         game_id: game,
         round: v.round,
         match: v.match,
         player1: v.player1 as number | null,
         player2: v.player2 as number | null,
+        winner: null,
       };
     }),
-  });
+    players
+  );
 }
 
 export async function GetMatches(game: number, round: number) {
