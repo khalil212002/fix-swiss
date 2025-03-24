@@ -24,7 +24,7 @@ const prisma = new PrismaClient()
   .$extends({
     model: {
       match: {
-        async addMatches(
+        async pushMatches(
           matches: Match[],
           players: (Partial<Player> & {
             avoid: Array<number | null>;
@@ -72,6 +72,50 @@ const prisma = new PrismaClient()
                   ),
                 },
                 where: { id: v.player2! },
+              });
+            }
+          });
+        },
+        async popMatches(gameId: number) {
+          prisma.$transaction(async (tx) => {
+            const round = await prisma.match.findFirst({
+              where: { game_id: gameId },
+              select: { round: true },
+              orderBy: { round: "desc" },
+            });
+            const players = await prisma.match.findMany({
+              where: { game_id: gameId, round: round?.round },
+              select: { black: true, white: true },
+            });
+            await tx.match.deleteMany({
+              where: { game_id: gameId, round: round!.round },
+            });
+            for (let i = 0; i < players.length; i++) {
+              const element = players[i];
+              element.white?.avoid.pop();
+              element.white?.seating.pop();
+              await tx.player.update({
+                where: { id: element.white?.id },
+                data: {
+                  avoid_str: JSON.stringify(element.white?.avoid),
+                  seating_str: JSON.stringify(element.white?.seating),
+                },
+              });
+              if (element.black == null) {
+                await tx.player.update({
+                  where: { id: element.white?.id },
+                  data: { receivedBye: false },
+                });
+                continue;
+              }
+              element.black?.avoid.pop();
+              element.black?.seating.pop();
+              await tx.player.update({
+                where: { id: element.black?.id },
+                data: {
+                  avoid_str: JSON.stringify(element.black?.avoid),
+                  seating_str: JSON.stringify(element.black?.seating),
+                },
               });
             }
           });

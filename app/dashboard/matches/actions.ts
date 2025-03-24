@@ -18,7 +18,7 @@ export async function Pair(game: number, round: number) {
 
   const matches = Swiss(players, round, round == 1, true);
 
-  await prisma.match.addMatches(
+  await prisma.match.pushMatches(
     matches.map((v) => {
       return {
         game_id: game,
@@ -31,6 +31,10 @@ export async function Pair(game: number, round: number) {
     }),
     players
   );
+}
+
+export async function deletePairing(gameId: number) {
+  await prisma.match.popMatches(gameId);
 }
 
 export async function GetMatches(game: number, round: number) {
