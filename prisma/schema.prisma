@@ -26,8 +26,8 @@ model Player {
   id            Int     @id @default(autoincrement())
   score         Int     @default(0)
   receivedBye   Boolean @default(false)
-  avoid         String  @default("[]")
-  seating       String  @default("[]")
+  avoid_str         String  @default("[]")
+  seating_str       String  @default("[]")
   rating        Int     @default(1200)
   birth_year    Int
   first_name    String
