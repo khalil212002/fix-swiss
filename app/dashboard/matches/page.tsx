@@ -150,12 +150,21 @@ export default function MatchesPage() {
                   </button>
                 </div>
                 <p className="w-50 text-end my-auto">
-                  ({v.player2}){" "}
-                  {(v as Match & { black: Player }).black.first_name +
-                    " " +
-                    ((v as Match & { black: Player }).black as Player)
-                      .last_name}
-                  {" ⬛"}
+                  {v.player2 != null ? (
+                    <>
+                      ({v.player2}){" "}
+                      {(v as Match & { black: Player }).black.first_name +
+                        " " +
+                        ((v as Match & { black: Player }).black as Player)
+                          .last_name}
+                      {" ⬛"}
+                    </>
+                  ) : (
+                    <>
+                      {"BYE"}
+                      {" ⬛"}
+                    </>
+                  )}
                 </p>
               </li>
             ))}
