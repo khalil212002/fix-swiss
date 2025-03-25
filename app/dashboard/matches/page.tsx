@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { GetGames } from "../games/actions";
-import { DeletePairing, GetMatches, Pair, SetWinner } from "./actions";
+import { UnPairing, GetMatches, Pair, SetWinner } from "./actions";
 import { Match, Player, Game } from "@prisma/client";
 
 export default function MatchesPage() {
@@ -30,13 +30,13 @@ export default function MatchesPage() {
   }, [game, round, refreshMatchesList]);
 
   async function pair() {
-    await Pair(game!.game.id!, round);
+    await Pair(game!.game.id!);
     setRefreshMatchesList(!refreshMatchesList);
   }
 
   async function unPair() {
     if (game) {
-      await DeletePairing(game?.game.id);
+      await UnPairing(game?.game.id);
       setRefreshMatchesList(!refreshMatchesList);
     }
   }
