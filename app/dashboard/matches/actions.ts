@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { Match } from "@prisma/client";
 import { Swiss } from "tournament-pairings";
 
 export async function Pair(game: number, round: number) {
@@ -8,41 +9,62 @@ export async function Pair(game: number, round: number) {
     where: { attendant: true, AND: { game_id: game } },
     select: {
       id: true,
-      score: true,
-      seating: true,
       rating: true,
-      avoid: true,
-      receivedBye: true,
+      black_matches: { select: { player1: true, winner: true, round: true } },
+      white_matches: { select: { player2: true, winner: true, round: true } },
     },
   });
-  console.log(players);
 
   const matches = Swiss(
     players.map((v) => {
-      return { ...v, avoid: v.avoid.filter((a) => a != null) };
+      return {
+        ...v,
+        receivedBye: v.white_matches.some((match) => match.player2 == null),
+        avoid: v.white_matches
+          .map((match) => match.player2)
+          .concat(v.black_matches.map((match) => match.player1))
+          .filter((player) => player != null),
+        score:
+          v.white_matches.filter((match) => match.winner == 1).length +
+          v.white_matches.filter((match) => match.winner == 0).length * 0.5 +
+          v.black_matches.filter((match) => match.winner == -1).length +
+          v.black_matches.filter((match) => match.winner == 0).length * 0.5,
+        seating: v.black_matches
+          .map((match) => {
+            return { round: match.round, value: -1 };
+          })
+          .concat(
+            v.white_matches.map((match) => {
+              return { round: match.round, value: 1 };
+            })
+          )
+          .sort((a, b) => a.round - b.round)
+          .map((v) => v.value) as Array<1 | -1>,
+      };
     }),
     round,
     round == 1,
     true
   );
 
-  await prisma.match.pushMatches(
-    matches.map((v) => {
-      return {
-        game_id: game,
-        round: v.round,
-        match: v.match,
-        player1: v.player1 as number | null,
-        player2: v.player2 as number | null,
-        winner: null,
-      };
+  await prisma.match.createMany({
+    data: matches.map((m) => {
+      return { game_id: game, ...m } as Match;
     }),
-    players
-  );
+  });
 }
 
 export async function DeletePairing(gameId: number) {
-  await prisma.match.popMatches(gameId);
+  await prisma.$transaction(async (tx) => {
+    const count = await tx.match.findFirst({
+      select: { round: true },
+      where: { game_id: gameId },
+      orderBy: { round: "desc" },
+    });
+    await tx.match.deleteMany({
+      where: { game_id: gameId, round: count?.round },
+    });
+  });
 }
 
 export async function GetMatches(game: number, round: number) {
