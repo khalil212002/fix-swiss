@@ -1,15 +1,11 @@
 "use client";
-import { createContext, FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { addPlayer, GetGamesList } from "./actions";
 import PlayerList from "./PlayerList";
 import EditPlayerDialog from "./EditPlayerDialog";
 import { GameSelect } from "./GameSelect";
 import { Player, Game } from "@prisma/client";
-
-export const GamesListContext = createContext<{
-  gameList: Partial<Game>[];
-  setGameList: (gameList: Partial<Game>[]) => void;
-}>({ gameList: [], setGameList: () => {} });
+import { GamesListContext } from "./GameListContext";
 
 export default function PlayersPage() {
   const [error, setError] = useState<null | string>(null);

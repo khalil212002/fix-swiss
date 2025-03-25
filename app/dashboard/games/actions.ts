@@ -5,7 +5,7 @@ import { Game } from "@prisma/client";
 
 export async function GetGames() {
   const games = await prisma.game.findMany();
-  let final: { game: Game; player_count: number }[] = [];
+  const final: { game: Game; player_count: number }[] = [];
   for (let i = 0; i < games.length; i++) {
     final.push({
       game: games[i],

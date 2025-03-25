@@ -54,7 +54,7 @@ export async function searchPlayer(
     const fname = (FormData?.get("firstName") ?? "").toString() + "%";
     const lname = (FormData?.get("lastName") ?? "").toString() + "%";
     const bYear = (FormData?.get("birthYear") ?? "").toString() + "%";
-    const game = Number.parseInt(FormData?.get("game")?.toString()!);
+    const game = Number.parseInt(FormData?.get("game")?.toString() ?? "-1");
 
     if (!Number.isNaN(game) && game != -1) {
       return await prisma.player.findMany({

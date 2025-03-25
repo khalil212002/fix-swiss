@@ -1,6 +1,6 @@
 import { ChangeEvent, useContext } from "react";
 import { GetGamesList } from "./actions";
-import { GamesListContext } from "./page";
+import { GamesListContext } from "./GameListContext";
 
 export function GameSelect({
   onChange,
