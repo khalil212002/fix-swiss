@@ -19,10 +19,7 @@ export default function MatchesList({
               ((v as Match & { white: Player }).white as Player).last_name}{" "}
             ({v.player1})
           </p>
-          <WinnerButtons
-            match={v}
-            refreshMatchList={() => refreshMatchesList}
-          />
+          <WinnerButtons match={v} refreshMatchList={refreshMatchesList} />
           <p className="w-50 text-end my-auto">
             {v.player2 != null ? (
               <>
