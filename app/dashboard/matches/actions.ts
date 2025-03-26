@@ -44,7 +44,9 @@ export async function Pair(game: number) {
             .concat(v.black_matches.map((match) => match.player1))
             .filter((player) => player != null),
           score:
-            v.white_matches.filter((match) => match.winner == 1).length +
+            v.white_matches.filter(
+              (match) => match.winner == 1 || match.player2 == null
+            ).length +
             v.white_matches.filter((match) => match.winner == 0).length * 0.5 +
             v.black_matches.filter((match) => match.winner == -1).length +
             v.black_matches.filter((match) => match.winner == 0).length * 0.5,
