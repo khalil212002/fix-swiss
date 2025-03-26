@@ -41,7 +41,6 @@ export default function PlayerList({
                 <GameSelect
                   defaultValue={(p.game_id ?? -1).toString()}
                   onChange={(e) => {
-                    console.log(e.target.value);
                     updatePlayer({
                       id: p.id,
                       game_id: Number.parseInt(e.target.value),

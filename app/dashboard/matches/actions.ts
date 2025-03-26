@@ -71,34 +71,6 @@ export async function Pair(game: number) {
         return { game_id: game, ...m } as Match;
       }),
     });
-    console.log(
-      players.map((v) => {
-        return {
-          ...v,
-          receivedBye: v.white_matches.some((match) => match.player2 == null),
-          avoid: v.white_matches
-            .map((match) => match.player2)
-            .concat(v.black_matches.map((match) => match.player1))
-            .filter((player) => player != null),
-          score:
-            v.white_matches.filter((match) => match.winner == 1).length +
-            v.white_matches.filter((match) => match.winner == 0).length * 0.5 +
-            v.black_matches.filter((match) => match.winner == -1).length +
-            v.black_matches.filter((match) => match.winner == 0).length * 0.5,
-          seating: v.black_matches
-            .map((match) => {
-              return { round: match.round, value: -1 };
-            })
-            .concat(
-              v.white_matches.map((match) => {
-                return { round: match.round, value: 1 };
-              })
-            )
-            .sort((a, b) => a.round - b.round)
-            .map((v) => v.value) as Array<1 | -1>,
-        };
-      })
-    );
   });
 }
 

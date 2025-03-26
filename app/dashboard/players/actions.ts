@@ -25,9 +25,7 @@ export async function addPlayer(form: FormData): Promise<string | null> {
     });
 
     return null;
-  } catch (e) {
-    console.log(e);
-
+  } catch {
     return "Failed to add player";
   }
 }
