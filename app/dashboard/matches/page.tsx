@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { GetGames } from "../games/actions";
-import { UnPairing, GetMatches, Pair, SetWinner } from "./actions";
-import { Match, Player, Game } from "@prisma/client";
+import { UnPairing, GetMatches, Pair } from "./actions";
+import { Match, Game } from "@prisma/client";
+import MatchesList from "./MatchesList";
 
 export default function MatchesPage() {
   const [games, setGames] = useState<{ game: Game; player_count: number }[]>(
@@ -99,7 +100,7 @@ export default function MatchesPage() {
             )}
             <button
               className="btn mx-1 btn-secondary"
-              disabled={round == game.game.rounds}
+              disabled={round == game.game.rounds || matches.length == 0}
               onClick={() => setRound(round + 1)}
             >
               Next
@@ -108,93 +109,10 @@ export default function MatchesPage() {
         </>
       )}
       {matches.length > 0 && (
-        <>
-          <ul className="list mt-3 bg-secondary rounded-box shadow-md">
-            {matches.map((v) => (
-              <li className="flex justify-evenly list-row" key={v.match}>
-                <p className=" w-50 my-auto">
-                  {"⬜ "}
-                  {((v as Match & { white: Player }).white as Player)
-                    .first_name +
-                    " " +
-                    ((v as Match & { white: Player }).white as Player)
-                      .last_name}{" "}
-                  ({v.player1})
-                </p>
-                <div className="join">
-                  <button
-                    className={
-                      "btn join-item" +
-                      (v.winner == 1 ? " btn-primary" : " btn-soft")
-                    }
-                    onClick={() =>
-                      SetWinner(
-                        v.game_id,
-                        v.round,
-                        v.match,
-                        v.winner == 1 ? null : 1
-                      ).then(() => setRefreshMatchesList(!refreshMatchesList))
-                    }
-                    disabled={v.player2 == null}
-                  >
-                    1 : 0
-                  </button>
-                  <button
-                    className={
-                      "btn join-item" +
-                      (v.winner == 0 ? " btn-primary" : " btn-soft")
-                    }
-                    onClick={() =>
-                      SetWinner(
-                        v.game_id,
-                        v.round,
-                        v.match,
-                        v.winner == 0 ? null : 0
-                      ).then(() => setRefreshMatchesList(!refreshMatchesList))
-                    }
-                    disabled={v.player2 == null}
-                  >
-                    0.5 : 0.5
-                  </button>
-                  <button
-                    className={
-                      "btn join-item" +
-                      (v.winner == -1 ? " btn-primary" : " btn-soft")
-                    }
-                    onClick={() =>
-                      SetWinner(
-                        v.game_id,
-                        v.round,
-                        v.match,
-                        v.winner == -1 ? null : -1
-                      ).then(() => setRefreshMatchesList(!refreshMatchesList))
-                    }
-                    disabled={v.player2 == null}
-                  >
-                    0 : 1
-                  </button>
-                </div>
-                <p className="w-50 text-end my-auto">
-                  {v.player2 != null ? (
-                    <>
-                      ({v.player2}){" "}
-                      {(v as Match & { black: Player }).black.first_name +
-                        " " +
-                        ((v as Match & { black: Player }).black as Player)
-                          .last_name}
-                      {" ⬛"}
-                    </>
-                  ) : (
-                    <>
-                      {"BYE"}
-                      {" ⬛"}
-                    </>
-                  )}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </>
+        <MatchesList
+          matches={matches}
+          refreshMatchesList={() => setRefreshMatchesList(!refreshMatchesList)}
+        />
       )}
     </>
   );
