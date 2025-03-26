@@ -124,13 +124,16 @@ export default function MatchesPage() {
                 <div className="join">
                   <button
                     className={
-                      "btn btn-primary join-item" +
-                      (v.winner == 1 ? "" : " btn-soft")
+                      "btn join-item" +
+                      (v.winner == 1 ? " btn-primary" : " btn-soft")
                     }
                     onClick={() =>
-                      SetWinner(v.game_id, v.round, v.match, 1).then(() =>
-                        setRefreshMatchesList(!refreshMatchesList)
-                      )
+                      SetWinner(
+                        v.game_id,
+                        v.round,
+                        v.match,
+                        v.winner == 1 ? null : 1
+                      ).then(() => setRefreshMatchesList(!refreshMatchesList))
                     }
                     disabled={v.player2 == null}
                   >
@@ -138,13 +141,16 @@ export default function MatchesPage() {
                   </button>
                   <button
                     className={
-                      "btn btn-primary join-item" +
-                      (v.winner == 0 ? "" : " btn-soft")
+                      "btn join-item" +
+                      (v.winner == 0 ? " btn-primary" : " btn-soft")
                     }
                     onClick={() =>
-                      SetWinner(v.game_id, v.round, v.match, 0).then(() =>
-                        setRefreshMatchesList(!refreshMatchesList)
-                      )
+                      SetWinner(
+                        v.game_id,
+                        v.round,
+                        v.match,
+                        v.winner == 0 ? null : 0
+                      ).then(() => setRefreshMatchesList(!refreshMatchesList))
                     }
                     disabled={v.player2 == null}
                   >
@@ -152,13 +158,16 @@ export default function MatchesPage() {
                   </button>
                   <button
                     className={
-                      "btn btn-primary join-item" +
-                      (v.winner == -1 ? "" : " btn-soft")
+                      "btn join-item" +
+                      (v.winner == -1 ? " btn-primary" : " btn-soft")
                     }
                     onClick={() =>
-                      SetWinner(v.game_id, v.round, v.match, -1).then(() =>
-                        setRefreshMatchesList(!refreshMatchesList)
-                      )
+                      SetWinner(
+                        v.game_id,
+                        v.round,
+                        v.match,
+                        v.winner == -1 ? null : -1
+                      ).then(() => setRefreshMatchesList(!refreshMatchesList))
                     }
                     disabled={v.player2 == null}
                   >

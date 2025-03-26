@@ -101,7 +101,7 @@ export async function SetWinner(
   game: number,
   round: number,
   match: number,
-  winner: number
+  winner: number | null
 ) {
   await prisma.match.update({
     where: { id: { game_id: game, match: match, round: round } },
