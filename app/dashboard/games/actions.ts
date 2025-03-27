@@ -15,8 +15,6 @@ export async function GetGames() {
     });
   }
 
-  console.log(final);
-
   return final;
 }
 
