@@ -31,7 +31,7 @@ model Player {
   attendant     Boolean @default(false)
   white_matches Match[] @relation(name: "whiteG")
   black_matches Match[] @relation(name: "blackG")
-  game          Game?   @relation(fields: [game_id], references: [id])
+  game          Game?   @relation(fields: [game_id], references: [id], onDelete: SetNull)
   game_id       Int?
 }
 
@@ -43,7 +43,7 @@ model Match {
   black   Player? @relation(fields: [player2], references: [id], name: "blackG")
   player2 Int?
   winner  Int?
-  game    Game    @relation(fields: [game_id], references: [id])
+  game    Game    @relation(fields: [game_id], references: [id], onDelete: Cascade)
   game_id Int
 
   @@id([round, match, game_id], name: "id")

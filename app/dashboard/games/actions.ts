@@ -32,8 +32,11 @@ export async function UpdateGame(game: Game) {
 export async function DeleteGame(id: number) {
   try {
     await prisma.game.delete({ where: { id: id } });
+
     return null;
   } catch (e) {
+    console.log((e as Error).message);
+
     return (e as Error).message;
   }
 }
