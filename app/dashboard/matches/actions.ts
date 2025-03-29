@@ -95,6 +95,7 @@ export async function GetMatches(game: number, round: number) {
     include: {
       black: { select: { first_name: true, last_name: true } },
       white: { select: { first_name: true, last_name: true } },
+      game: { select: { first_table: true } },
     },
   });
 }

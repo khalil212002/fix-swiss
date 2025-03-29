@@ -74,6 +74,22 @@ export default function EditGameDailog({
                 }}
               />
             </label>
+            <label className="floating-label my-2 me-2">
+              <span>First table</span>
+              <input
+                name="firstTable"
+                defaultValue={editGame?.first_table}
+                type="number"
+                min={1}
+                placeholder="First table"
+                className="input input-md"
+                onChange={(e) => {
+                  const p = { ...editGame! };
+                  p.first_table = Number.parseInt(e.target.value);
+                  setEditGame(p);
+                }}
+              />
+            </label>
           </div>
           <div className="modal-action">
             {/* if there is a button in form, it will close the modal */}
