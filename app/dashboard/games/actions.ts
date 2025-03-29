@@ -4,18 +4,11 @@ import prisma from "@/lib/prisma";
 import { Game } from "@prisma/client";
 
 export async function GetGames() {
-  const games = await prisma.game.findMany();
-  const final: { game: Game; player_count: number }[] = [];
-  for (let i = 0; i < games.length; i++) {
-    final.push({
-      game: games[i],
-      player_count: await prisma.player.count({
-        where: { attendant: true, AND: { game_id: games[i].id } },
-      }),
-    });
-  }
-
-  return final;
+  return await prisma.game.findMany({
+    include: {
+      _count: { select: { players: { where: { attendant: true } } } },
+    },
+  });
 }
 
 export async function UpdateGame(game: Game) {

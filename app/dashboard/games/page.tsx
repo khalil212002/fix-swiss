@@ -18,10 +18,9 @@ export default function Games_page() {
   };
   const [error, setError] = useState<string | null>(null);
   const [updateList, setUpdateList] = useState(false);
-  const [editGame, setEditGame] = useState<{
-    game: Game;
-    player_count: number;
-  } | null>(null);
+  const [editGame, setEditGame] = useState<
+    (Game & { _count: { players: number } }) | null
+  >(null);
 
   return (
     <>

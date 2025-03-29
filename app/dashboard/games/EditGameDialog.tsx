@@ -7,14 +7,13 @@ export default function EditGameDailog({
   setGame,
   updateList,
 }: {
-  game: { game: Game; player_count: number };
-  setGame: (game: { game: Game; player_count: number } | null) => void;
+  game: Game & { _count: { players: number } };
+  setGame: (game: (Game & { _count: { players: number } }) | null) => void;
   updateList: () => void;
 }) {
-  const [editGame, setEditGame] = useState<{
-    game: Game;
-    player_count: number;
-  } | null>(game);
+  const [editGame, setEditGame] = useState<
+    (Game & { _count: { players: number } }) | null
+  >(game);
   useEffect(() => {
     setEditGame(game);
     (
@@ -26,9 +25,7 @@ export default function EditGameDailog({
     <>
       <dialog id="edit_game_modal" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg mb-2">
-            Edit game {editGame?.game.id}
-          </h3>
+          <h3 className="font-bold text-lg mb-2">Edit game {editGame?.id}</h3>
           <div className="flex">
             <label className="floating-label my-2 me-2">
               <span>Name</span>
@@ -36,11 +33,11 @@ export default function EditGameDailog({
                 name="name"
                 type="text"
                 placeholder="Name"
-                defaultValue={editGame?.game.name}
+                defaultValue={editGame?.name}
                 className="input input-md"
                 onChange={(e) => {
                   const p = { ...editGame! };
-                  p.game!.name = e.target.value;
+                  p.name = e.target.value;
                   setEditGame(p);
                 }}
               />
@@ -52,10 +49,10 @@ export default function EditGameDailog({
                 type="text"
                 placeholder="Last name"
                 className="input input-md"
-                defaultValue={editGame?.game.description ?? ""}
+                defaultValue={editGame?.description ?? ""}
                 onChange={(e) => {
                   const p = { ...editGame! };
-                  p.game!.description = e.target.value;
+                  p.description = e.target.value;
                   setEditGame(p);
                 }}
               />
@@ -64,14 +61,14 @@ export default function EditGameDailog({
               <span>Rounds</span>
               <input
                 name="rounds"
-                defaultValue={editGame?.game.rounds}
+                defaultValue={editGame?.rounds}
                 type="number"
                 min={1}
                 placeholder="Birth year"
                 className="input input-md"
                 onChange={(e) => {
                   const p = { ...editGame! };
-                  p.game!.rounds = Number.parseInt(e.target.value);
+                  p.rounds = Number.parseInt(e.target.value);
                   setEditGame(p);
                 }}
               />
@@ -84,7 +81,7 @@ export default function EditGameDailog({
                 type="button"
                 className="btn btn-error mx-1"
                 onClick={() => {
-                  DeleteGame(editGame?.game.id ?? -1).then(() => {
+                  DeleteGame(editGame?.id ?? -1).then(() => {
                     updateList();
                     setGame(null);
                   });
@@ -104,7 +101,7 @@ export default function EditGameDailog({
                 className="btn btn-primary mx-1"
                 onClick={() => {
                   if (editGame)
-                    UpdateGame(editGame.game).then(() => {
+                    UpdateGame(editGame).then(() => {
                       updateList();
                       setGame(null);
                     });

@@ -7,12 +7,12 @@ import { Match, Game } from "@prisma/client";
 import MatchesList from "./MatchesList";
 
 export default function MatchesPage() {
-  const [games, setGames] = useState<{ game: Game; player_count: number }[]>(
-    []
-  );
-  const [game, setGame] = useState<{ game: Game; player_count: number } | null>(
-    null
-  );
+  const [games, setGames] = useState<
+    (Game & { _count: { players: number } })[]
+  >([]);
+  const [game, setGame] = useState<
+    (Game & { _count: { players: number } }) | null
+  >(null);
   const [refreshGameList, setRefreshGameList] = useState(false);
   const [round, setRound] = useState(1);
   const [matches, setMatches] = useState<Match[]>([]);
@@ -23,21 +23,21 @@ export default function MatchesPage() {
     });
   }, [refreshGameList]);
   useEffect(() => {
-    if (game?.game.id)
-      GetMatches(game.game.id, round).then((v) => {
+    if (game?.id)
+      GetMatches(game.id, round).then((v) => {
         setMatches(v);
       });
     else setMatches([]);
   }, [game, round, refreshMatchesList]);
 
   async function pair() {
-    await Pair(game!.game.id!);
+    await Pair(game!.id!);
     setRefreshMatchesList(!refreshMatchesList);
   }
 
   async function unPair() {
     if (game) {
-      await UnPairing(game?.game.id);
+      await UnPairing(game?.id);
       setRefreshMatchesList(!refreshMatchesList);
     }
   }
@@ -50,7 +50,7 @@ export default function MatchesPage() {
           className="select select-primary"
           onChange={(e) => {
             setGame(
-              games.find((g) => g.game.id?.toString() == e.target.value) ?? null
+              games.find((g) => g.id?.toString() == e.target.value) ?? null
             );
             setRound(1);
           }}
@@ -60,21 +60,21 @@ export default function MatchesPage() {
             Select Game
           </option>
           {games.map((g) => (
-            <option key={g.game.id} value={g.game.id}>
-              {g.game.name}
+            <option key={g.id} value={g.id}>
+              {g.name}
             </option>
           ))}
         </select>
         {game && (
           <>
             <h3 className="mt-1 ms-10 text-nowrap">
-              Players: {game?.player_count}
+              Players: {game?._count.players}
             </h3>
             <h3 className="mt-1 ms-10 text-nowrap">
-              Rounds: {round}/{game?.game.rounds}
+              Rounds: {round}/{game?.rounds}
             </h3>
             <h3 className="mt-1 ms-10 text-nowrap">
-              Description: {game?.game.description}
+              Description: {game?.description}
             </h3>
           </>
         )}
@@ -100,7 +100,7 @@ export default function MatchesPage() {
             )}
             <button
               className="btn mx-1 btn-secondary"
-              disabled={round == game.game.rounds || matches.length == 0}
+              disabled={round == game.rounds || matches.length == 0}
               onClick={() => setRound(round + 1)}
             >
               Next

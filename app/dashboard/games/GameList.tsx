@@ -9,11 +9,11 @@ export default function GameList({
 }: {
   updated: boolean;
   update: () => void;
-  setEditGame: (game: { game: Game; player_count: number } | null) => void;
+  setEditGame: (game: (Game & { _count: { players: number } }) | null) => void;
 }) {
-  const [games, setGames] = useState<{ game: Game; player_count: number }[]>(
-    []
-  );
+  const [games, setGames] = useState<
+    (Game & { _count: { players: number } })[]
+  >([]);
   useEffect(() => {
     GetGames().then((v) => setGames(v));
   }, [updated]);
@@ -31,18 +31,18 @@ export default function GameList({
       {games.map((g) => (
         <li
           className="list-row flex flex-row justify-between text-center"
-          key={g.game.id}
+          key={g.id}
         >
           <div>
             <div>
-              {g.game.name}({g.game.id})
+              {g.name}({g.id})
             </div>
             <div className="text-xs uppercase font-semibold opacity-60">
-              {g.game.description}
+              {g.description}
             </div>
           </div>
-          <div>Rounds:{g.game.rounds}</div>
-          <div>players:{g.player_count}</div>
+          <div>Rounds:{g.rounds}</div>
+          <div>players:{g._count.players}</div>
           <button className="btn btn-link" onClick={() => setEditGame(g)}>
             edit
           </button>

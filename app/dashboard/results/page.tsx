@@ -6,12 +6,12 @@ import { GetGames } from "../games/actions";
 import { GetResults } from "./action";
 
 export default function ResultsPage() {
-  const [games, setGames] = useState<{ game: Game; player_count: number }[]>(
-    []
-  );
-  const [game, setGame] = useState<{ game: Game; player_count: number } | null>(
-    null
-  );
+  const [games, setGames] = useState<
+    (Game & { _count: { players: number } })[]
+  >([]);
+  const [game, setGame] = useState<
+    (Game & { _count: { players: number } }) | null
+  >(null);
   const [results, setResults] = useState<
     { name: string; score: number; SB_score: number }[]
   >([]);
@@ -23,7 +23,7 @@ export default function ResultsPage() {
   }, [refreshGameList]);
 
   useEffect(() => {
-    if (game) GetResults(game.game.id).then((v) => setResults(v));
+    if (game) GetResults(game.id).then((v) => setResults(v));
     else setResults([]);
   }, [game]);
 
@@ -35,7 +35,7 @@ export default function ResultsPage() {
           className="select select-primary"
           onChange={(e) => {
             setGame(
-              games.find((g) => g.game.id?.toString() == e.target.value) ?? null
+              games.find((g) => g.id?.toString() == e.target.value) ?? null
             );
           }}
           onClick={() => setRefreshGameList(!refreshGameList)}
@@ -44,8 +44,8 @@ export default function ResultsPage() {
             Select Game
           </option>
           {games.map((g) => (
-            <option key={g.game.id} value={g.game.id}>
-              {g.game.name}
+            <option key={g.id} value={g.id}>
+              {g.name}
             </option>
           ))}
         </select>
