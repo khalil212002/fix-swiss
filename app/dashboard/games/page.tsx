@@ -49,6 +49,16 @@ export default function Games_page() {
                 />
               </label>
               <label className="floating-label my-2 me-2">
+                <span>First Table</span>
+                <input
+                  name="firstTable"
+                  type="number"
+                  min={1}
+                  placeholder="First Table"
+                  className="input input-md"
+                />
+              </label>
+              <label className="floating-label my-2 me-2">
                 <span className="bg-secondary">description</span>
                 <input
                   name="description"

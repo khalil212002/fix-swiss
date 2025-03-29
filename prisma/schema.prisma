@@ -54,6 +54,7 @@ model Game {
   name        String   @unique
   description String?
   rounds      Int
+  first_table Int @default(1)
   players     Player[]
   matches     Match[]
 }

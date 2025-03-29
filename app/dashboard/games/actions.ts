@@ -15,12 +15,14 @@ export async function UpdateGame(game: Game) {
   try {
     if (!game.name || game.name.length == 0) return "Name is not valid!";
     if (game.rounds < 1) return "Rounds is not valid!";
+    if (game.first_table < 1) return "First table is not valid!";
     await prisma.game.update({
       where: { id: game.id },
       data: {
         name: game.name,
         description: game.description,
         rounds: game.rounds,
+        first_table: game.first_table,
       },
     });
     return null;
@@ -44,12 +46,18 @@ export async function CreateGame(formData: FormData): Promise<string | null> {
   const name = formData.get("name")?.toString();
   const rounds = Number.parseInt(formData.get("rounds")?.toString() ?? "-1");
   const description = formData.get("description")?.toString() ?? null;
+  const firstTable = Number.parseInt(
+    formData.get("firstTable")?.toString() ?? "-1"
+  );
 
   if (!name || name?.length == 0) return "Name is not valid!";
   if (rounds < 1) return "Rounds is not valid!";
+  if (firstTable < 1) return "First table is not valid!";
 
   try {
-    await prisma.game.create({ data: { name, rounds, description } });
+    await prisma.game.create({
+      data: { name, rounds, description, first_table: firstTable },
+    });
     return null;
   } catch (error) {
     console.log(error);

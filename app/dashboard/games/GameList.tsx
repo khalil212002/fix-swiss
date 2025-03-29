@@ -42,6 +42,7 @@ export default function GameList({
             </div>
           </div>
           <div>Rounds:{g.rounds}</div>
+          <div>Fisrt table:{g.first_table}</div>
           <div>players:{g._count.players}</div>
           <button className="btn btn-link" onClick={() => setEditGame(g)}>
             edit

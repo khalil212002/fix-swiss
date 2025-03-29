@@ -1,4 +1,4 @@
-import { Match, Player } from "@prisma/client";
+import { Game, Match, Player } from "@prisma/client";
 import WinnerButtons from "./WinnerButtons";
 
 export default function MatchesList({
@@ -12,6 +12,11 @@ export default function MatchesList({
     <ul className="list mt-3 bg-secondary rounded-box shadow-md">
       {matches.map((v) => (
         <li className="flex justify-evenly list-row" key={v.match}>
+          <p className="text-4xl font-thin opacity-70 tabular-nums">
+            {`${(v.match + (v as Match & { game: Game }).game.first_table - 1)
+              .toString()
+              .padStart(2, "0")}`}
+          </p>
           <p className=" w-50 my-auto">
             {"⬜ "}
             {((v as Match & { white: Player }).white as Player).first_name +
