@@ -20,6 +20,7 @@ export default function EditGameDailog({
       document.getElementById("edit_game_modal") as HTMLDialogElement
     ).showModal();
   }, [game]);
+  const [error, setError] = useState<string | null>(null);
 
   return (
     <>
@@ -75,42 +76,50 @@ export default function EditGameDailog({
             </label>
           </div>
           <div className="modal-action">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button
-                type="button"
-                className="btn btn-error mx-1"
-                onClick={() => {
-                  DeleteGame(editGame?.id ?? -1).then(() => {
+            {/* if there is a button in form, it will close the modal */}
+
+            <button
+              type="button"
+              className="btn btn-error mx-1"
+              onClick={() => {
+                DeleteGame(editGame?.id ?? -1).then((retsult) => {
+                  setError(retsult);
+                  if (retsult == null) {
                     updateList();
                     setGame(null);
-                  });
-                }}
-              >
-                Delete
-              </button>
-              <button
-                type="button"
-                className="btn btn-secondary mx-1"
-                onClick={() => setGame(null)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary mx-1"
-                onClick={() => {
-                  if (editGame)
-                    UpdateGame(editGame).then(() => {
+                  }
+                });
+              }}
+            >
+              Delete
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary mx-1"
+              onClick={() => setGame(null)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary mx-1"
+              onClick={() => {
+                if (editGame)
+                  UpdateGame(editGame).then((retsult) => {
+                    setError(retsult);
+                    if (retsult == null) {
                       updateList();
                       setGame(null);
-                    });
-                }}
-              >
-                Save
-              </button>
-            </form>
+                    }
+                  });
+              }}
+            >
+              Save
+            </button>
           </div>
+          {error != null && (
+            <div className="alert alert-error mt-4">{error}</div>
+          )}
         </div>
       </dialog>
     </>
