@@ -18,6 +18,7 @@ export default function EditPlayerDialog({
       document.getElementById("edit_player_modal") as HTMLDialogElement
     ).showModal();
   }, [player]);
+  const [error, setError] = useState<string | null>(null);
   return (
     <>
       <dialog id="edit_player_modal" className="modal">
@@ -92,42 +93,49 @@ export default function EditPlayerDialog({
             </label>
           </div>
           <div className="modal-action">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <button
-                type="button"
-                className="btn btn-error mx-1"
-                onClick={() => {
-                  deletePlayer(editPlayer?.id ?? -1).then(() => {
+            {/* if there is a button in form, it will close the modal */}
+            <button
+              type="button"
+              className="btn btn-error mx-1"
+              onClick={() => {
+                deletePlayer(editPlayer?.id ?? -1).then((result) => {
+                  setError(result);
+                  if (result == null) {
                     toggleUpdatePlayers();
                     setPlayer(undefined);
-                  });
-                }}
-              >
-                Delete
-              </button>
-              <button
-                type="button"
-                className="btn btn-secondary mx-1"
-                onClick={() => setPlayer(undefined)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary mx-1"
-                onClick={() => {
-                  if (editPlayer)
-                    updatePlayer(editPlayer).then(() => {
+                  }
+                });
+              }}
+            >
+              Delete
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary mx-1"
+              onClick={() => setPlayer(undefined)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary mx-1"
+              onClick={() => {
+                if (editPlayer)
+                  updatePlayer(editPlayer).then((result) => {
+                    setError(result);
+                    if (result == null) {
                       toggleUpdatePlayers();
                       setPlayer(undefined);
-                    });
-                }}
-              >
-                Save
-              </button>
-            </form>
+                    }
+                  });
+              }}
+            >
+              Save
+            </button>
           </div>
+          {error != null && (
+            <div className="alert alert-error mt-4">{error}</div>
+          )}
         </div>
       </dialog>
     </>
